@@ -28,12 +28,67 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            stockholm = new Button();
+            uppsala = new Button();
+            malmö = new Button();
+            göteborg = new Button();
+            SuspendLayout();
+            // 
+            // stockholm
+            // 
+            stockholm.Location = new Point(142, 112);
+            stockholm.Name = "stockholm";
+            stockholm.Size = new Size(94, 29);
+            stockholm.TabIndex = 0;
+            stockholm.Text = "Stockholm";
+            stockholm.UseVisualStyleBackColor = true;
+            // 
+            // uppsala
+            // 
+            uppsala.Location = new Point(142, 189);
+            uppsala.Name = "uppsala";
+            uppsala.Size = new Size(94, 29);
+            uppsala.TabIndex = 1;
+            uppsala.Text = "Uppsala";
+            uppsala.UseVisualStyleBackColor = true;
+            // 
+            // malmö
+            // 
+            malmö.Location = new Point(142, 275);
+            malmö.Name = "malmö";
+            malmö.Size = new Size(94, 29);
+            malmö.TabIndex = 2;
+            malmö.Text = "Malmö";
+            malmö.UseVisualStyleBackColor = true;
+            // 
+            // göteborg
+            // 
+            göteborg.Location = new Point(142, 363);
+            göteborg.Name = "göteborg";
+            göteborg.Size = new Size(94, 29);
+            göteborg.TabIndex = 3;
+            göteborg.Text = "Göteborg";
+            göteborg.UseVisualStyleBackColor = true;
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(göteborg);
+            Controls.Add(malmö);
+            Controls.Add(uppsala);
+            Controls.Add(stockholm);
+            Name = "Form1";
+            Text = "Form1";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button stockholm;
+        private Button uppsala;
+        private Button malmö;
+        private Button göteborg;
     }
 }
