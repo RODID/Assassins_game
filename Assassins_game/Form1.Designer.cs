@@ -44,6 +44,7 @@
             login_button.TabIndex = 0;
             login_button.Text = "Login";
             login_button.UseVisualStyleBackColor = true;
+            login_button.Click += login_button_Click;
             // 
             // signup_button
             // 
@@ -53,6 +54,7 @@
             signup_button.TabIndex = 1;
             signup_button.Text = "Signup";
             signup_button.UseVisualStyleBackColor = true;
+            signup_button.Click += signup_button_Click;
             // 
             // username_label
             // 
