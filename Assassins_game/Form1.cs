@@ -26,8 +26,7 @@ namespace Assassins_game
 
         private void signup_button_Click(object sender, EventArgs e)
         {
-            SignUpForm signupForm = new SignUpForm();
-            signupForm.ShowDialog();
+           
         }
     }
 }
