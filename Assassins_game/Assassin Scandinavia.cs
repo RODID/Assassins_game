@@ -31,5 +31,20 @@ namespace Assassins_game
         {
 
         }
+
+        private void Helsinki_Mission_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Gotland_Mission_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Goteborg_Mission_Button_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

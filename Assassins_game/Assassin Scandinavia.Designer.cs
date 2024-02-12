@@ -55,6 +55,7 @@
             Goteborg_Mission_Button.TabIndex = 1;
             Goteborg_Mission_Button.Text = "Göteborg";
             Goteborg_Mission_Button.UseVisualStyleBackColor = true;
+            Goteborg_Mission_Button.Click += Goteborg_Mission_Button_Click;
             // 
             // Stockholm_Mission_Button
             // 
@@ -74,6 +75,7 @@
             Helsinki_Mission_Button.TabIndex = 1;
             Helsinki_Mission_Button.Text = "Helsinki";
             Helsinki_Mission_Button.UseVisualStyleBackColor = true;
+            Helsinki_Mission_Button.Click += Helsinki_Mission_Button_Click;
             // 
             // Gotland_Mission_Button
             // 
@@ -83,6 +85,7 @@
             Gotland_Mission_Button.TabIndex = 1;
             Gotland_Mission_Button.Text = "Gotland";
             Gotland_Mission_Button.UseVisualStyleBackColor = true;
+            Gotland_Mission_Button.Click += Gotland_Mission_Button_Click;
             // 
             // Assassin_Scandinavia
             // 
