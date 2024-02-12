@@ -16,5 +16,20 @@ namespace Assassins_game
         {
             InitializeComponent();
         }
+
+        private void Assassin_Scandinavia_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Stockholm_Mission_Button_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

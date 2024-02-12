@@ -73,7 +73,6 @@
             password_label.Size = new Size(70, 20);
             password_label.TabIndex = 3;
             password_label.Text = "Password";
-            password_label.Click += label2_Click;
             // 
             // password_textbox
             // 
