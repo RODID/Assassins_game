@@ -50,6 +50,7 @@
             register_register_.TabIndex = 0;
             register_register_.Text = "Register";
             register_register_.UseVisualStyleBackColor = true;
+            register_register_.Click += register_register_Click;
             // 
             // register_clear_
             // 
@@ -59,7 +60,7 @@
             register_clear_.TabIndex = 1;
             register_clear_.Text = "Clear";
             register_clear_.UseVisualStyleBackColor = true;
-            register_clear_.Click += register_clear__Click;
+            register_clear_.Click += register_clear_Click;
             // 
             // Register_username_txtlabel
             // 
@@ -110,6 +111,7 @@
             register_password_txtbox1.Name = "register_password_txtbox1";
             register_password_txtbox1.Size = new Size(125, 27);
             register_password_txtbox1.TabIndex = 3;
+            register_password_txtbox1.TextChanged += register_password_txtbox1_TextChanged;
             // 
             // register_password_txtbox2
             // 
@@ -117,6 +119,7 @@
             register_password_txtbox2.Name = "register_password_txtbox2";
             register_password_txtbox2.Size = new Size(125, 27);
             register_password_txtbox2.TabIndex = 3;
+            register_password_txtbox2.TextChanged += register_password_txtbox2_TextChanged;
             // 
             // textBox4
             // 
@@ -140,6 +143,7 @@
             register_goback_.TabIndex = 1;
             register_goback_.Text = "Go Back";
             register_goback_.UseVisualStyleBackColor = true;
+            register_goback_.Click += register_goback_Click;
             // 
             // Assassin_Registration
             // 

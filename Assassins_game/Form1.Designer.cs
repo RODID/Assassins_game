@@ -81,6 +81,7 @@
             password_textbox.Name = "password_textbox";
             password_textbox.Size = new Size(125, 27);
             password_textbox.TabIndex = 4;
+            password_textbox.TextChanged += password_textbox_TextChanged;
             // 
             // username_textbox
             // 
