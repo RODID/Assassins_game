@@ -27,6 +27,7 @@ namespace Assassins_game
 
             else if (username_textbox.Text == adminUsername && password_textbox.Text == adminPassword)
             {
+                MessageBox.Show("Welcome Back, Master Assassin.");
 
             }
         }
