@@ -12,6 +12,8 @@ namespace Assassins_game
 {
     public partial class Assassin_Scandinavia : Form
     {
+
+
         public Assassin_Scandinavia()
         {
             InitializeComponent();

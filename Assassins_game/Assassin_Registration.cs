@@ -15,6 +15,7 @@ namespace Assassins_game
 {
     public partial class Assassin_Registration : Form
     {
+        DB Database = new DB();
         public Assassin_Registration()
         {
             InitializeComponent();

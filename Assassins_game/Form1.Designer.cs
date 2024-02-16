@@ -88,6 +88,7 @@
             username_textbox.Name = "username_textbox";
             username_textbox.Size = new Size(125, 27);
             username_textbox.TabIndex = 5;
+            username_textbox.TextChanged += username_textbox_TextChanged;
             // 
             // Form1
             // 

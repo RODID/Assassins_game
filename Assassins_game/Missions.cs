@@ -24,19 +24,6 @@ namespace Assassins_game
         }
        
 
-        public Missions CreateMission(int mission_id, string name, string title, string description, TimeSpan Mission_duration)
-        {
-            return new Missions (name, title, description, Mission_duration);
-        }
-
-        Missions mission1 = new Missions("Learning Poison", "the ambasador", "send your henchmen to kill the ambasador", TimeSpan.Parse("00:05:00:00"));
-        Missions mission2 = new Missions("Clear The Path", "The Ambasador", "Kill the 'Fox' and retrive his weapon of doom", TimeSpan.Parse("00:10:00:00"));
-        Missions mission3 = new Missions("Documents", "Castle Muzii", "retrive a sertain document hhidden in a tomb", TimeSpan.Parse("00:15:05:00"));
-        Missions mission4 = new Missions("Fortify", "Castle Takeover", "Kill all the underground guards", TimeSpan.Parse("00:20:00:00"));
-        Missions mission5 = new Missions("Eurika", "Machiavelli's documents", "Send Blue print to Machiavelli so that he can giv the information to davinchi about a sertain war machine", TimeSpan.Parse("00:50:00:00"));
-
-
-
     }
 
 

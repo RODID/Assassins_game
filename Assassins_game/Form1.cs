@@ -1,5 +1,9 @@
 using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Assassins_game
 {
@@ -29,6 +33,9 @@ namespace Assassins_game
             {
                 MessageBox.Show("Welcome Back, Master Assassin.");
 
+                Assassin_Scandinavia assassin_Scandinavia = new Assassin_Scandinavia();
+                assassin_Scandinavia.ShowDialog();
+
             }
         }
 
@@ -42,6 +49,11 @@ namespace Assassins_game
         private void password_textbox_TextChanged(object sender, EventArgs e)
         {
             password_textbox.PasswordChar = '*';
+        }
+
+        private void username_textbox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
