@@ -16,6 +16,8 @@ namespace Assassins_game
         private List<Missions> StockholmMissions = new List<Missions>();
         private List<Missions> HelsinkiMissions = new List<Missions>();
         private List<Missions> GotlandMissions = new List<Missions>();
+        private MissionTimer missionTimer;
+        List<Missions> missions = new List<Missions>();
         public Assassin_Scandinavia()
         {
             InitializeComponent();
@@ -48,7 +50,7 @@ namespace Assassins_game
 
         private void Goteborg_Mission_Button_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void Refresh_Button_Click(object sender, EventArgs e)
