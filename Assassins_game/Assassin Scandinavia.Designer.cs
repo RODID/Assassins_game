@@ -34,6 +34,7 @@
             Stockholm_Mission_Button = new Button();
             Helsinki_Mission_Button = new Button();
             Gotland_Mission_Button = new Button();
+            Refresh_Button = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -87,11 +88,23 @@
             Gotland_Mission_Button.UseVisualStyleBackColor = true;
             Gotland_Mission_Button.Click += Gotland_Mission_Button_Click;
             // 
+            // Refresh_Button
+            // 
+            Refresh_Button.ForeColor = Color.ForestGreen;
+            Refresh_Button.Location = new Point(147, 657);
+            Refresh_Button.Name = "Refresh_Button";
+            Refresh_Button.Size = new Size(94, 29);
+            Refresh_Button.TabIndex = 2;
+            Refresh_Button.Text = "Refresh";
+            Refresh_Button.UseVisualStyleBackColor = true;
+            Refresh_Button.Click += Refresh_Button_Click;
+            // 
             // Assassin_Scandinavia
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(955, 1127);
+            Controls.Add(Refresh_Button);
             Controls.Add(Stockholm_Mission_Button);
             Controls.Add(Gotland_Mission_Button);
             Controls.Add(Helsinki_Mission_Button);
@@ -111,5 +124,6 @@
         private Button Stockholm_Mission_Button;
         private Button Helsinki_Mission_Button;
         private Button Gotland_Mission_Button;
+        private Button Refresh_Button;
     }
 }

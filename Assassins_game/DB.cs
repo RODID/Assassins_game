@@ -26,13 +26,12 @@ namespace Assassins_game
                 {
                     while (reader.Read())
                     {
-                        int missionId = Convert.ToInt32(reader["Mission_Id"]);
-                        string missionName = reader["Mission Name"].ToString();
-                        string missionTitle = reader["Mission_Title"].ToString();
-                        string missionDescription = reader["Mission_Description"].ToString();
-                        TimeSpan missionDuration = TimeSpan.Parse(reader["Mission_duration"].ToString()); ;
+                        int missionId = Convert.ToInt32(reader["mission_id"]);
+                        string missionName = reader["mission_name"].ToString();
+                        string missionDescription = reader["mission_description"].ToString();
+                        TimeSpan missionDuration = TimeSpan.Parse(reader["mission_time"].ToString()); ;
                         
-                        Missions mission = new Missions(missionId, missionName, missionTitle, missionDescription, missionDuration);
+                        Missions mission = new Missions(missionId, missionName, missionDescription, missionDuration);
                         missions.Add(mission);
                     }
                 }
