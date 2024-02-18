@@ -16,7 +16,6 @@ namespace Assassins_game
         private List<Missions> StockholmMissions = new List<Missions>();
         private List<Missions> HelsinkiMissions = new List<Missions>();
         private List<Missions> GotlandMissions = new List<Missions>();
-        private MissionTimer missionTimer;
         List<Missions> missions = new List<Missions>();
         public Assassin_Scandinavia()
         {
@@ -28,14 +27,10 @@ namespace Assassins_game
             RefreshMissions();
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void Stockholm_Mission_Button_Click(object sender, EventArgs e)
         {
-
+            Stockholm_City_Missions stockholm_City_Missions = new Stockholm_City_Missions();
+            stockholm_City_Missions.ShowDialog();
         }
 
         private void Helsinki_Mission_Button_Click(object sender, EventArgs e)

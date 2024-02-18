@@ -48,7 +48,7 @@
             listViewMissions.Size = new Size(191, 372);
             listViewMissions.TabIndex = 0;
             listViewMissions.UseCompatibleStateImageBehavior = false;
-            listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
+            listViewMissions.SelectedIndexChanged += ListViewMissions;
             // 
             // SendButton
             // 
