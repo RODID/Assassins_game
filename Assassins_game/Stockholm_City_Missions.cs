@@ -30,23 +30,8 @@ namespace Assassins_game
 
         private void listViewMissions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            listViewMissions.Items.Clear();
-
-            List<Missions> CityMissions = GetItemWithSpecificID(mission_id));
-
-            foreach (var mission in CityMissions)
-            {
-                ListViewItem listItem = new ListViewItem(mission.Mission_id.ToString());
-                listItem.SubItems.Add(mission.Mission_name);
-
-                if (CityMissions ==)
-            }
             
-        }
-
-        private List<Missions> GetItemWithSpecificID(object mission_id)
-        {
-            throw new NotImplementedException();
+            
         }
 
         private void LabelId_Click(object sender, EventArgs e)

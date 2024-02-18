@@ -29,9 +29,10 @@ namespace Assassins_game
                         int missionId = Convert.ToInt32(reader["mission_id"]);
                         string missionName = reader["mission_name"].ToString();
                         string missionDescription = reader["mission_description"].ToString();
+                        string missionLocation = reader["mission_location"].ToString();
                         TimeSpan missionDuration = TimeSpan.Parse(reader["mission_time"].ToString()); ;
                         
-                        Missions mission = new Missions(missionId, missionName, missionDescription, missionDuration);
+                        Missions mission = new Missions(missionId, missionName, missionDescription, missionLocation, missionDuration);
                         missions.Add(mission);
                     }
                 }
