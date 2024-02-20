@@ -43,11 +43,13 @@
             // 
             // listViewMissions
             // 
+            listViewMissions.HoverSelection = true;
             listViewMissions.Location = new Point(29, 29);
             listViewMissions.Name = "listViewMissions";
-            listViewMissions.Size = new Size(191, 372);
+            listViewMissions.Size = new Size(257, 372);
             listViewMissions.TabIndex = 0;
             listViewMissions.UseCompatibleStateImageBehavior = false;
+            listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += ListViewMissions;
             // 
             // SendButton

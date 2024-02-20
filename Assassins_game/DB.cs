@@ -9,7 +9,7 @@ namespace Assassins_game
 {
     internal class DB
     {
-        private string conectionstring = "server=localhost;uid=root;password=<arjan123>;database=<Assassins_DB>";
+        private string conectionstring = "server=localhost;uid=root;password=arjan123;database=Assassins_DB";
 
         public List<Missions> GetMissions()
         {
