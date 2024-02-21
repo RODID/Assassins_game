@@ -33,21 +33,6 @@ namespace Assassins_game
             stockholm_City_Missions.ShowDialog();
         }
 
-        private void Helsinki_Mission_Button_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Gotland_Mission_Button_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Goteborg_Mission_Button_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void Refresh_Button_Click(object sender, EventArgs e)
         {
             RefreshMissions();
@@ -57,12 +42,9 @@ namespace Assassins_game
         {
             List<Missions> allMissions = db.GetMissions();
             StockholmMissions = allMissions.Where(m => m.Mission_Location == "Stockholm").ToList();
-            HelsinkiMissions = allMissions.Where(m => m.Mission_Location == "Helsinki").ToList();
-            GotlandMissions = allMissions.Where(m => m.Mission_Location == "Gotland").ToList() ;
 
             RefreshButtonMissionList(Stockholm_Mission_Button, StockholmMissions);
-            RefreshButtonMissionList(Helsinki_Mission_Button, HelsinkiMissions);
-            RefreshButtonMissionList(Gotland_Mission_Button, GotlandMissions);
+            
         }
 
         private void RefreshButtonMissionList (Button button, List<Missions> missions)

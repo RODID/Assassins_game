@@ -8,6 +8,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace Assassins_game
 {
@@ -17,11 +19,8 @@ namespace Assassins_game
         public Stockholm_City_Missions()
         {
             InitializeComponent();
-        }
-
-        private void LabelName_Click(object sender, EventArgs e)
-        {
-
+            MissionLoadButton.Click += MissionLoadButton_Click;
+            populateListViewWithMissions();
         }
 
         private void Stockholm_City_Missions_Load(object sender, EventArgs e)
@@ -31,29 +30,16 @@ namespace Assassins_game
 
         private void populateListViewWithMissions()
         {
-            listViewMissions.Items.Clear();
+            ListBoxMissions.Items.Clear();
 
             List<Missions> missions = Database.GetMissions();
 
             foreach (Missions mission in missions)
             {
-                ListViewItem item = new ListViewItem(mission.Mission_id.ToString());
-                item.SubItems.Add(mission.Mission_name);
-                item.SubItems.Add(mission.Mission_description);
-                item.SubItems.Add(mission.Mission_duration.ToString());
+                string missionInfo = $"ID: {mission.Mission_id}, Name: {mission.Mission_name}, {mission.Mission_description}, Duration: {mission.Mission_duration};"
 
-                listViewMissions.Items.Add(item);
+                ListBoxMissions.Items.Add(missionInfo);
             }
-        }
-
-        private void LabelId_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void LabelDescription_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void SendButton_Click(object sender, EventArgs e)
@@ -66,24 +52,10 @@ namespace Assassins_game
 
         }
 
-        private void listViewMissions_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void MissionLoadButton_Click(object sender, EventArgs e)
         {
-            if (listViewMissions.SelectedItems.Count > 0)
-            {
-                ListViewItem selectedItem = listViewMissions.SelectedItems[0];
-
-                int missionId = int.Parse(selectedItem.SubItems[0].Text);
-                string missionName = selectedItem.SubItems[1].Text;
-                string missionDescritption = selectedItem.SubItems[2].Text;
-                string missionDuration = selectedItem.SubItems[3].Text;
-
-                LabelId.Text = "ID: " + missionId.ToString();
-                LabelName.Text = "Name: " + missionName;
-                LabelDescription.Text = "Descritption: " + missionDescription;
-                LabelDuration.Text = "Duration: " + missionDuration;
-
-                listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
-            }
+            populateListViewWithMissions();
         }
     }
 }
