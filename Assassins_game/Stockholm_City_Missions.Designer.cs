@@ -29,10 +29,11 @@
         private void InitializeComponent()
         {
             listViewMissions = new ListView();
+            columnHeader1 = new ColumnHeader();
             SendButton = new Button();
             GoBackButton = new Button();
             label1 = new Label();
-            label2 = new Label();
+            LabelName = new Label();
             label3 = new Label();
             label4 = new Label();
             LabelId = new Label();
@@ -43,6 +44,7 @@
             // 
             // listViewMissions
             // 
+            listViewMissions.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
             listViewMissions.HoverSelection = true;
             listViewMissions.Location = new Point(29, 29);
             listViewMissions.Name = "listViewMissions";
@@ -50,7 +52,7 @@
             listViewMissions.TabIndex = 0;
             listViewMissions.UseCompatibleStateImageBehavior = false;
             listViewMissions.View = View.List;
-            listViewMissions.SelectedIndexChanged += ListViewMissions;
+            listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
             // 
             // SendButton
             // 
@@ -81,15 +83,14 @@
             label1.TabIndex = 2;
             label1.Text = "ID";
             // 
-            // label2
+            // LabelName
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(484, 85);
-            label2.Name = "label2";
-            label2.Size = new Size(12, 20);
-            label2.TabIndex = 2;
-            label2.Text = ".";
-            label2.Click += LabelName_Click;
+            LabelName.AutoSize = true;
+            LabelName.Location = new Point(484, 85);
+            LabelName.Name = "LabelName";
+            LabelName.Size = new Size(12, 20);
+            LabelName.TabIndex = 2;
+            LabelName.Text = ".";
             // 
             // label3
             // 
@@ -117,7 +118,6 @@
             LabelId.Size = new Size(12, 20);
             LabelId.TabIndex = 2;
             LabelId.Text = ".";
-            LabelId.Click += LabelId_Click;
             // 
             // label6
             // 
@@ -137,7 +137,6 @@
             LabelDescription.Size = new Size(204, 20);
             LabelDescription.TabIndex = 2;
             LabelDescription.Text = "Select Mission for description";
-            LabelDescription.Click += LabelDescription_Click;
             // 
             // label8
             // 
@@ -158,7 +157,7 @@
             Controls.Add(LabelDescription);
             Controls.Add(label3);
             Controls.Add(label6);
-            Controls.Add(label2);
+            Controls.Add(LabelName);
             Controls.Add(LabelId);
             Controls.Add(label1);
             Controls.Add(GoBackButton);
@@ -177,12 +176,13 @@
         private Button SendButton;
         private Button GoBackButton;
         private Label label1;
-        private Label label2;
+        private Label LabelName;
         private Label label3;
         private Label label4;
         private Label LabelId;
         private Label label6;
         private Label LabelDescription;
         private Label label8;
+        private ColumnHeader columnHeader1;
     }
 }

@@ -28,7 +28,7 @@ namespace Assassins_game
         {
             populateListViewWithMissions();
         }
-        
+
         private void populateListViewWithMissions()
         {
             listViewMissions.Items.Clear();
@@ -39,15 +39,11 @@ namespace Assassins_game
             {
                 ListViewItem item = new ListViewItem(mission.Mission_id.ToString());
                 item.SubItems.Add(mission.Mission_name);
+                item.SubItems.Add(mission.Mission_description);
                 item.SubItems.Add(mission.Mission_duration.ToString());
 
                 listViewMissions.Items.Add(item);
             }
-        }
-
-        private void ListViewMissions(object sender, EventArgs e)
-        {
-            
         }
 
         private void LabelId_Click(object sender, EventArgs e)
@@ -68,6 +64,26 @@ namespace Assassins_game
         private void GoBackButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void listViewMissions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewMissions.SelectedItems.Count > 0)
+            {
+                ListViewItem selectedItem = listViewMissions.SelectedItems[0];
+
+                int missionId = int.Parse(selectedItem.SubItems[0].Text);
+                string missionName = selectedItem.SubItems[1].Text;
+                string missionDescritption = selectedItem.SubItems[2].Text;
+                string missionDuration = selectedItem.SubItems[3].Text;
+
+                LabelId.Text = "ID: " + missionId.ToString();
+                LabelName.Text = "Name: " + missionName;
+                LabelDescription.Text = "Descritption: " + missionDescription;
+                LabelDuration.Text = "Duration: " + missionDuration;
+
+                listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
+            }
         }
     }
 }
