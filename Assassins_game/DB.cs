@@ -9,13 +9,16 @@ namespace Assassins_game
 {
     internal class DB
     {
-        private string conectionstring = "server=localhost;uid=root;password=arjan123;database=Assassins_DB";
-
+        private string connectionString = "server=localhost;uid=root;password=arjan123;database=Assassins_DB";
+        public MySqlConnection GetConnection()
+        {
+            return new MySqlConnection(connectionString);
+        }
         public List<Missions> GetMissions()
         {
             List<Missions> missions = new List<Missions>();
 
-            using (MySqlConnection connection = new MySqlConnection(conectionstring))
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 

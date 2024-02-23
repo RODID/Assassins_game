@@ -15,11 +15,12 @@ namespace Assassins_game
 {
     public partial class Stockholm_City_Missions : Form
     {
-        DB Database = new DB();
-        public Stockholm_City_Missions()
+        private readonly MySqlConnection connection;
+        public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
             InitializeComponent();
             MissionLoadButton.Click += MissionLoadButton_Click;
+            this.connection = mySqlConnection;
             populateListViewWithMissions();
         }
 
@@ -30,15 +31,20 @@ namespace Assassins_game
 
         private void populateListViewWithMissions()
         {
-            ListBoxMissions.Items.Clear();
-
-            List<Missions> missions = Database.GetMissions();
-
-            foreach (Missions mission in missions)
+            try
             {
-                string missionInfo = $"ID: {mission.Mission_id}, Name: {mission.Mission_name}, {mission.Mission_description}, Duration: {mission.Mission_duration};"
+                string query = "SELECT mission_id, mission_name FROM mission";
+                MySqlCommand command = new MySqlCommand(query, connection);
 
-                ListBoxMissions.Items.Add(missionInfo);
+                connection.Open();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
         }
 
@@ -56,6 +62,11 @@ namespace Assassins_game
         private void MissionLoadButton_Click(object sender, EventArgs e)
         {
             populateListViewWithMissions();
+        }
+
+        private void ListBoxMissions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

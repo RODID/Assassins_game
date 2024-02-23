@@ -71,6 +71,7 @@
             ListBoxMissions.Name = "ListBoxMissions";
             ListBoxMissions.Size = new Size(330, 364);
             ListBoxMissions.TabIndex = 3;
+            ListBoxMissions.SelectedIndexChanged += ListBoxMissions_SelectedIndexChanged;
             // 
             // Stockholm_City_Missions
             // 

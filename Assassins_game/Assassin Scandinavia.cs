@@ -29,7 +29,7 @@ namespace Assassins_game
 
         private void Stockholm_Mission_Button_Click(object sender, EventArgs e)
         {
-            Stockholm_City_Missions stockholm_City_Missions = new Stockholm_City_Missions();
+            Stockholm_City_Missions stockholm_City_Missions = new Stockholm_City_Missions(db.GetConnection());
             stockholm_City_Missions.ShowDialog();
         }
 
