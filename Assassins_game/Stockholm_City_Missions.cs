@@ -22,6 +22,9 @@ namespace Assassins_game
             MissionLoadButton.Click += MissionLoadButton_Click;
             this.connection = mySqlConnection;
             populateListViewWithMissions();
+            listViewMissions.View = View.List;
+
+            listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
         }
 
         private void Stockholm_City_Missions_Load(object sender, EventArgs e)
@@ -37,6 +40,20 @@ namespace Assassins_game
                 MySqlCommand command = new MySqlCommand(query, connection);
 
                 connection.Open();
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    listViewMissions.Items.Clear();
+
+                    while (reader.Read())
+                    {
+                        int missionId = reader.GetInt32("mission_id");
+                        string missionName = reader.GetString("mission_name");
+                        string missionInfo = $"{missionId} {missionName}";
+
+                        listViewMissions.Items.Add(missionInfo);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -64,9 +81,34 @@ namespace Assassins_game
             populateListViewWithMissions();
         }
 
-        private void ListBoxMissions_SelectedIndexChanged(object sender, EventArgs e)
+        private void listViewMissions_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (listViewMissions.SelectedItems.Count > 0)
+            {
+                ListViewItem selectedItem = listViewMissions.SelectedItems[0];
 
+                string[] missionInfo = selectedItem.Text.Split(',');
+                string missionId = missionInfo[0];
+                string missionName = string.Join(" ", missionInfo.Skip(1));
+
+                string missionDescription = GetMissionDescription(missionId);
+
+                missionDescriptionLabel.Text = missionDescription;
         }
     }
-}
+
+        private string GetMissionDescription(string missionId)
+        {
+            string missionDescription = "";
+
+            try
+            {
+                string query = "SELECT mission_description FROM mission WHERE mission_id = @missionId";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@missionId", missionId);
+
+                connection.Open();
+                missionDescription = command.ExecuteScalar()?.ToString();
+            }
+        }
+    }
