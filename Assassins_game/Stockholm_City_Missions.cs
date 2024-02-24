@@ -16,6 +16,7 @@ namespace Assassins_game
     public partial class Stockholm_City_Missions : Form
     {
         private readonly MySqlConnection connection;
+        
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
             InitializeComponent();
