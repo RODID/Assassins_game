@@ -33,6 +33,7 @@
             MissionLoadButton = new Button();
             listViewMissions = new ListView();
             missionDescriptionTextBox = new TextBox();
+            missionDurationTextBox = new TextBox();
             SuspendLayout();
             // 
             // SendButton
@@ -82,12 +83,22 @@
             missionDescriptionTextBox.Name = "missionDescriptionTextBox";
             missionDescriptionTextBox.Size = new Size(394, 176);
             missionDescriptionTextBox.TabIndex = 4;
+            missionDescriptionTextBox.TextChanged += missionDescriptionTextBox_TextChanged;
+            // 
+            // CountdownTimer_Tick
+            // 
+            missionDurationTextBox.Location = new Point(46, 268);
+            missionDurationTextBox.Name = "CountdownTimer_Tick";
+            missionDurationTextBox.Size = new Size(125, 27);
+            missionDurationTextBox.TabIndex = 5;
+            missionDurationTextBox.TextChanged += CountdownTimer_Tick;
             // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(missionDurationTextBox);
             Controls.Add(missionDescriptionTextBox);
             Controls.Add(listViewMissions);
             Controls.Add(MissionLoadButton);
@@ -106,5 +117,6 @@
         private Button MissionLoadButton;
         private ListView listViewMissions;
         private TextBox missionDescriptionTextBox;
+        private TextBox missionDurationTextBox;
     }
 }

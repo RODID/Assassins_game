@@ -15,12 +15,13 @@ namespace Assassins_game
 {
     public partial class Stockholm_City_Missions : Form
     {
-        private readonly MySqlConnection connection;
-        
+        private MySqlConnection connection;
+
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
             InitializeComponent();
             MissionLoadButton.Click += MissionLoadButton_Click;
+
             this.connection = mySqlConnection;
             populateListViewWithMissions();
             listViewMissions.View = View.List;
@@ -95,7 +96,6 @@ namespace Assassins_game
 
                 string missionDescription = GetMissionDescription(missionId);
 
-                // Set the wrapped description to the TextBox
                 missionDescriptionTextBox.Text = missionDescription;
             }
         }
@@ -127,5 +127,14 @@ namespace Assassins_game
 
         }
 
+        private void missionDescriptionTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CountdownTimer_Tick_Timer(object sender, EventArgs e)
+        {
+            TimeSpan remainingTime = endTime 
+        }
     }
 }
