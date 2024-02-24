@@ -32,7 +32,7 @@
             GoBackButton = new Button();
             MissionLoadButton = new Button();
             listViewMissions = new ListView();
-            missionDescriptionLabel = new Label();
+            missionDescriptionTextBox = new TextBox();
             SuspendLayout();
             // 
             // SendButton
@@ -75,21 +75,20 @@
             listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
             // 
-            // missionDescriptionLabel
+            // missionDescriptionTextBox
             // 
-            missionDescriptionLabel.AutoSize = true;
-            missionDescriptionLabel.Location = new Point(38, 36);
-            missionDescriptionLabel.Name = "missionDescriptionLabel";
-            missionDescriptionLabel.Size = new Size(88, 20);
-            missionDescriptionLabel.TabIndex = 4;
-            missionDescriptionLabel.Text = "Description:";
+            missionDescriptionTextBox.Location = new Point(46, 54);
+            missionDescriptionTextBox.Multiline = true;
+            missionDescriptionTextBox.Name = "missionDescriptionTextBox";
+            missionDescriptionTextBox.Size = new Size(394, 176);
+            missionDescriptionTextBox.TabIndex = 4;
             // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(missionDescriptionLabel);
+            Controls.Add(missionDescriptionTextBox);
             Controls.Add(listViewMissions);
             Controls.Add(MissionLoadButton);
             Controls.Add(GoBackButton);
@@ -106,6 +105,6 @@
         private Button GoBackButton;
         private Button MissionLoadButton;
         private ListView listViewMissions;
-        private Label missionDescriptionLabel;
+        private TextBox missionDescriptionTextBox;
     }
 }

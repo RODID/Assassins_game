@@ -72,6 +72,7 @@ namespace Assassins_game
 
         private void GoBackButton_Click(object sender, EventArgs e)
         {
+            Close();
 
         }
 
@@ -93,9 +94,11 @@ namespace Assassins_game
 
                 string missionDescription = GetMissionDescription(missionId);
 
-                missionDescriptionLabel.Text = missionDescription;
+                // Set the wrapped description to the TextBox
+                missionDescriptionTextBox.Text = missionDescription;
+            }
         }
-    }
+
 
         private string GetMissionDescription(string missionId)
         {
@@ -110,5 +113,18 @@ namespace Assassins_game
                 connection.Open();
                 missionDescription = command.ExecuteScalar()?.ToString();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return missionDescription;
+
+
         }
+
     }
+}
