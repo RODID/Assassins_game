@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
+using System.Linq.Expressions;
 
 namespace Assassins_game
 {
@@ -17,16 +18,72 @@ namespace Assassins_game
     {
         private MySqlConnection connection;
 
+
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
             InitializeComponent();
             MissionLoadButton.Click += MissionLoadButton_Click;
 
+
             this.connection = mySqlConnection;
             populateListViewWithMissions();
+            populateListViewHistoryMissions();
             listViewMissions.View = View.List;
-
+            
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
+        }
+
+        private void UpdateMissionStatus(string missionId)
+        {
+            try
+            {
+                string query = "UPDATE mission SET mission_status = 'Completed' WHERE mission_id = @missionId";
+                MySqlCommand updateTime = new MySqlCommand(query, connection);
+                updateTime.Parameters.AddWithValue("@missionId", missionId);
+
+                connection.Open();
+                updateTime.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating mission status: " + ex.Message);
+            }
+            finally 
+            {
+                connection.Close();
+            }
+        }
+        private void populateListViewHistoryMissions()
+        {
+            try
+            {
+                string query = "SELECT mission_id, mission_name FROM mission where mission_status = 'Completed'";
+                MySqlCommand updateTime = new MySqlCommand(query, connection);
+
+                connection.Open();
+
+                using (MySqlDataReader reader = updateTime.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int missionId = reader.GetInt32("mission_id");
+                        string missionName = reader.GetString("mission_name");
+                        string missionInfo = $"{missionId}{missionName}";
+
+                        listViewMissions.Items.Add(missionInfo);
+                    }
+                }
+                
+            }
+            catch ( Exception ex ) 
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            finally 
+            { 
+                connection.Close();
+            }
+          
         }
 
         private void Stockholm_City_Missions_Load(object sender, EventArgs e)
@@ -69,7 +126,20 @@ namespace Assassins_game
 
         private void SendButton_Click(object sender, EventArgs e)
         {
+            if (listViewMissions.SelectedItems.Count > 0)
+            {
+                string selectedItemText = listViewMissions.SelectedItems[0].Text;
+                int missionId = int.Parse(selectedItemText.Split(' ')[0];
 
+                CountDownTimer.Tag = missionId;
+                CountDownTimer.Start();
+            }
+            else
+            {
+                MessageBox.Show("Please select a mission to start! ");
+            }
+
+            
         }
 
         private void GoBackButton_Click(object sender, EventArgs e)
@@ -127,14 +197,62 @@ namespace Assassins_game
 
         }
 
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void UppdateRemainingTimeForMission(int missionId, int remainingTime)
+        {
+            try
+            {
+                string query = "UPDATE mission SET mission_time = @remainingTime WHERE mission_id = @missionId";
+                MySqlCommand timeUpdate = new MySqlCommand(query, connection);
+                timeUpdate.Parameters.AddWithValue("@remainingTime", remainingTime);
+                timeUpdate.Parameters.AddWithValue("@missionId", missionId);
+
+                connection.Open();
+                timeUpdate.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error updating remaining time for mission: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        private int GetRemainingTimeForMission(int missionId)
+        {
+            int remainingTime = 0;
+            try
+            {
+                string query = "SELECT missions_time FROM mission WHERE mission_id = @missionId";
+                MySqlCommand getTime = new MySqlCommand(query, connection);
+                getTime.Parameters.AddWithValue("@missionId", missionId);
+
+                connection.Open();
+                remainingTime = Convert.ToInt32(getTime.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return remainingTime;
+        }
+
         private void missionDescriptionTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void CountdownTimer_Tick_Timer(object sender, EventArgs e)
-        {
-            TimeSpan remainingTime = endTime 
-        }
+
+
     }
 }

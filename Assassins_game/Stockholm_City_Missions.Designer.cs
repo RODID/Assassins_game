@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             SendButton = new Button();
             GoBackButton = new Button();
             MissionLoadButton = new Button();
             listViewMissions = new ListView();
             missionDescriptionTextBox = new TextBox();
-            missionDurationTextBox = new TextBox();
+            listViewHistoryMission = new ListView();
+            CountDownTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // SendButton
@@ -85,20 +87,21 @@
             missionDescriptionTextBox.TabIndex = 4;
             missionDescriptionTextBox.TextChanged += missionDescriptionTextBox_TextChanged;
             // 
-            // CountdownTimer_Tick
+            // listViewHistoryMission
             // 
-            missionDurationTextBox.Location = new Point(46, 268);
-            missionDurationTextBox.Name = "CountdownTimer_Tick";
-            missionDurationTextBox.Size = new Size(125, 27);
-            missionDurationTextBox.TabIndex = 5;
-            missionDurationTextBox.TextChanged += CountdownTimer_Tick;
+            listViewHistoryMission.Location = new Point(46, 311);
+            listViewHistoryMission.Name = "listViewHistoryMission";
+            listViewHistoryMission.Size = new Size(270, 108);
+            listViewHistoryMission.TabIndex = 5;
+            listViewHistoryMission.UseCompatibleStateImageBehavior = false;
+            listViewHistoryMission.View = View.List;
             // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(missionDurationTextBox);
+            Controls.Add(listViewHistoryMission);
             Controls.Add(missionDescriptionTextBox);
             Controls.Add(listViewMissions);
             Controls.Add(MissionLoadButton);
@@ -117,6 +120,7 @@
         private Button MissionLoadButton;
         private ListView listViewMissions;
         private TextBox missionDescriptionTextBox;
-        private TextBox missionDurationTextBox;
+        private ListView listViewHistoryMission;
+        private System.Windows.Forms.Timer CountDownTimer;
     }
 }
