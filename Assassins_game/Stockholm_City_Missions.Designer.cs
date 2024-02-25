@@ -35,7 +35,7 @@
             listViewMissions = new ListView();
             missionDescriptionTextBox = new TextBox();
             listViewHistoryMission = new ListView();
-            CountDownTimer = new System.Windows.Forms.Timer(components);
+            CountdownTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // SendButton
@@ -121,6 +121,6 @@
         private ListView listViewMissions;
         private TextBox missionDescriptionTextBox;
         private ListView listViewHistoryMission;
-        private System.Windows.Forms.Timer CountDownTimer;
+        private System.Windows.Forms.Timer CountdownTimer;
     }
 }

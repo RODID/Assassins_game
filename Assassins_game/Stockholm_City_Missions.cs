@@ -131,8 +131,8 @@ namespace Assassins_game
                 string selectedItemText = listViewMissions.SelectedItems[0].Text;
                 int missionId = int.Parse(selectedItemText.Split(' ')[0];
 
-                CountDownTimer.Tag = missionId;
-                CountDownTimer.Start();
+                CountdownTimer.Tag = missionId;
+                CountdownTimer.Start();
             }
             else
             {
@@ -199,7 +199,44 @@ namespace Assassins_game
 
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
-            
+            if (CountdownTimer.Tag != null)
+            {
+                int missionId = (int)CountdownTimer.Tag;
+                int remainingTime = GetRemainingTimeForMission(missionId);
+
+                remainingTime--;
+
+                UppdateRemainingTimeForMission(missionId, remainingTime);
+                
+                if (remainingTime <= 0)
+                {
+                    UpdateMissionStatus(missionId.ToString());
+
+                    MoveMissionToHistory(missionId);
+
+                    SendButton.Enabled = true;
+
+                    MessageBox.Show("mission Completed!");
+                    CountdownTimer.Stop();
+                }
+            }
+
+            populateListViewWithMissions();
+            populateListViewHistoryMissions();
+        }
+
+        private void MoveMissionToHistory(int missionId)
+        {
+            try
+            {
+                string query = "INSERT INTO mission_history (assassin_id, mission_id) VALEUS (@assassinId, @missionId)";
+                MySqlCommand moveToHistory = new MySqlCommand(query, connection);
+                moveToHistory.Parameters.AddWithValue("@assassinId", GetAssassinId());
+                moveToHistory.Parameters.AddWithValue("@missionId", missionId);
+
+                connection.Open();
+                moveToHistory.ExecuteNonQuery();
+            }
         }
 
         private void UppdateRemainingTimeForMission(int missionId, int remainingTime)

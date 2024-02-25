@@ -42,5 +42,34 @@ namespace Assassins_game
             }
             return missions;
         }
+
+        public int GetAssassinId(string username)
+        {
+            int assassinId = -1; // Default value if assassin ID is not found
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    string query = "SELECT assassin_id FROM assassins WHERE assassin_name = @username";
+                    MySqlCommand getAssassinId = new MySqlCommand(query, connection);
+                    getAssassinId.Parameters.AddWithValue("@username", username);
+
+                    object result = getAssassinId.ExecuteScalar();
+                    if (result != null)
+                    {
+                        assassinId = Convert.ToInt32(result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error getting assassin ID: " + ex.Message);
+                }
+            }
+
+            return assassinId;
+        }
     }
 }
