@@ -15,10 +15,10 @@ using System.Timers;
 
 namespace Assassins_game
 {
-    public partial class Stockholm_City_Missions : Form
+    public partial class Stockholm_City_Missions : Assassin_Scandinavia
     {
         private MySqlConnection connection;
-        DB db = new DB();
+        private DB db = new DB();
         private System.Windows.Forms.Timer missionTimer;
 
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
@@ -28,30 +28,39 @@ namespace Assassins_game
 
 
             this.connection = mySqlConnection;
+            
+            
+
             PopulateListViewWithMissions();
-            PopulateListViewHistoryMissions();
             listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
 
         }
 
-        public void MissionTimer_Tick(object? sender, EventArgs e)
+        private void MissionTimer_Tick(object? sender, EventArgs e)
         {
-            missionTimer = new System.Windows.Forms.Timer();
-            missionTimer.Enabled = true;
-            missionTimer.Interval = 1000;
-            missionTimer.Tick += MissionTimer_Tick;
+            missionTimer.Stop();
 
-            int missionId = (int)missionTimer.Tag;
-            int missionDurationInSeconds = db.GetMissionDuration(missionId);
-
-            missionTimer.Interval = missionDurationInSeconds * 1000;
-
-            missionTimer.Start();
-
-            if(db.GetMissionDuration(missionId) <= 0 ) 
+            if (sender is System.Windows.Forms.Timer timer) 
             {
+                int missionId = (int)timer.Tag;
+                MoveMissionToHistory(missionId);
+                UppdateMissionStatus(missionId);
                 
+            }
+            else
+            {
+                PopulateListViewHistoryMissions();
+                MessageBox.Show("Error: 404 matrix stolen");
+            }
+
+        }
+
+        private void UppdateMissionStatus(int missionId)
+        {
+            using (MySqlConnection connection = db.GetConnection())
+            {
+                db.UppdateMissionStatus(missionId, connection);
             }
         }
 
@@ -90,9 +99,9 @@ namespace Assassins_game
           
         }
 
-        private void Stockholm_City_Missions_Load(object sender, EventArgs e)
+        public void Stockholm_City_Missions_Load(object sender, EventArgs e)
         {
-
+            PopulateListViewWithMissions();
         }
 
         private void PopulateListViewWithMissions()
@@ -130,28 +139,37 @@ namespace Assassins_game
 
         private void SendButton_Click(object sender, EventArgs e)
         {
-            if (listViewMissions.SelectedItems.Count > 0)
+            try
             {
-                string selectedItemText = listViewMissions.SelectedItems[0].Text;
-                int missionId = int.Parse(selectedItemText.Split(' ')[0]);
-
-                int missionDurationInSeconds = db.GetMissionDuration(missionId);
-                if(missionDurationInSeconds > 0)
+                if (listViewMissions.SelectedItems.Count > 0)
                 {
-                    missionTimer.Tag = missionId;
+                    string selectedItemText = listViewMissions.SelectedItems[0].Text;
+                    int missionId = int.Parse(selectedItemText.Split(' ')[0]);
 
-                    missionTimer.Start();
+                    int missionDurationInSeconds = db.GetMissionDuration(missionId);
+                    if (missionDurationInSeconds > 0)
+                    {
+                        missionTimer.Interval = missionDurationInSeconds * 1000;
 
+                        missionTimer.Tag = missionId;
+                        missionTimer.Start();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Mission Duration is not valid. come back to this mission later!");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Mission Duration is not valid. come back to this mission later!");
+                    MessageBox.Show("Please select a mission to start! ");
                 }
             }
-            else
+            catch(Exception ex)
             {
-                MessageBox.Show("Please select a mission to start! ");
+                MessageBox.Show("Error: " + ex.Message);
             }
+            
         }
 
         

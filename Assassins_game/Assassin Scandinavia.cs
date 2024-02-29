@@ -12,6 +12,7 @@ namespace Assassins_game
 {
     public partial class Assassin_Scandinavia : Form
     {
+        private Stockholm_City_Missions stockholm_City_Missions;
         private readonly DB db = new DB();
         private List<Missions> StockholmMissions = new List<Missions>();
         List<Missions> missions = new List<Missions>();
@@ -22,7 +23,7 @@ namespace Assassins_game
 
         private void Assassin_Scandinavia_Load(object sender, EventArgs e)
         {
-            RefreshMissions();
+            
         }
 
         private void Stockholm_Mission_Button_Click(object sender, EventArgs e)
