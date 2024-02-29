@@ -96,6 +96,11 @@
             listViewHistoryMission.UseCompatibleStateImageBehavior = false;
             listViewHistoryMission.View = View.List;
             // 
+            // CountdownTimer
+            // 
+            CountdownTimer.Enabled = true;
+            CountdownTimer.Tick += SendButton_Click;
+            // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);

@@ -14,8 +14,6 @@ namespace Assassins_game
     {
         private readonly DB db = new DB();
         private List<Missions> StockholmMissions = new List<Missions>();
-        private List<Missions> HelsinkiMissions = new List<Missions>();
-        private List<Missions> GotlandMissions = new List<Missions>();
         List<Missions> missions = new List<Missions>();
         public Assassin_Scandinavia()
         {

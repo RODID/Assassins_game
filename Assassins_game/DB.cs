@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Assassins_game
 {
-    internal class DB
+    public class DB
     {
+
         private string connectionString = "server=localhost;uid=root;password=arjan123;database=Assassins_DB";
         public MySqlConnection GetConnection()
         {
@@ -45,7 +46,7 @@ namespace Assassins_game
 
         public int GetAssassinId(string username)
         {
-            int assassinId = -1; // Default value if assassin ID is not found
+            int assassinId = -1; 
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -71,5 +72,37 @@ namespace Assassins_game
 
             return assassinId;
         }
+
+        
+        public int GetMissionDuration(int missionId)
+        {
+            int missionDuration = 0;
+
+            using (MySqlConnection connection = GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+
+                    string durationQuery = "SELECT mission_time FROM mission WHERE mission_id =@missionId";
+                    MySqlCommand durationCommand = new MySqlCommand(durationQuery, connection);
+                    durationCommand.Parameters.AddWithValue("@missionId", missionId);
+
+                    object result = durationCommand.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        missionDuration = Convert.ToInt32(result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error getting mission duration: " + ex.Message);
+                }
+            }
+            return missionDuration;
+        }
+
+        
+        
     }
 }

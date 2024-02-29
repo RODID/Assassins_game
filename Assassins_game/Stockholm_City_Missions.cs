@@ -11,13 +11,16 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using System.Linq.Expressions;
+using System.Timers;
 
 namespace Assassins_game
 {
     public partial class Stockholm_City_Missions : Form
     {
         private MySqlConnection connection;
-
+        DB db = new DB();
+        private System.Windows.Forms.Timer missionTimer;
+        
 
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
@@ -29,8 +32,18 @@ namespace Assassins_game
             populateListViewWithMissions();
             populateListViewHistoryMissions();
             listViewMissions.View = View.List;
-            
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
+
+            missionTimer = new System.Windows.Forms.Timer();
+            missionTimer.Interval = 1000;
+            missionTimer.Tick += MissionTimer_Tick;
+
+            
+        }
+
+        private void MissionTimer_Tick(object? sender, EventArgs e)
+        {
+
         }
 
         private void UpdateMissionStatus(string missionId)
@@ -72,7 +85,9 @@ namespace Assassins_game
 
                         listViewMissions.Items.Add(missionInfo);
                     }
+                    reader.Close();
                 }
+                connection.Close();
                 
             }
             catch ( Exception ex ) 
@@ -88,7 +103,7 @@ namespace Assassins_game
 
         private void Stockholm_City_Missions_Load(object sender, EventArgs e)
         {
-            populateListViewWithMissions();
+
         }
 
         private void populateListViewWithMissions()
@@ -129,17 +144,31 @@ namespace Assassins_game
             if (listViewMissions.SelectedItems.Count > 0)
             {
                 string selectedItemText = listViewMissions.SelectedItems[0].Text;
-                int missionId = int.Parse(selectedItemText.Split(' ')[0];
+                int missionId = int.Parse(selectedItemText.Split(' ')[0]);
 
-                CountdownTimer.Tag = missionId;
-                CountdownTimer.Start();
+                int missionDurationInSeconds = db.GetMissionDuration(missionId);
+                if(missionDurationInSeconds > 0)
+                {
+                    StartMissionTimer(missionId, missionDurationInSeconds);
+                }
+                else
+                {
+                    MessageBox.Show("Mission Duration is not valid. come back to this mission later!");
+                }
             }
             else
             {
                 MessageBox.Show("Please select a mission to start! ");
             }
+        }
 
-            
+        
+
+        private void StartMissionTimer(int missionId, int missionDurrationInSeconds)
+        {
+            missionTimer.Start();
+
+            missionTimer.Tag = missionId;
         }
 
         private void GoBackButton_Click(object sender, EventArgs e)
@@ -197,46 +226,68 @@ namespace Assassins_game
 
         }
 
-        private void CountdownTimer_Tick(object sender, EventArgs e)
-        {
-            if (CountdownTimer.Tag != null)
-            {
-                int missionId = (int)CountdownTimer.Tag;
-                int remainingTime = GetRemainingTimeForMission(missionId);
+        
 
-                remainingTime--;
-
-                UppdateRemainingTimeForMission(missionId, remainingTime);
-                
-                if (remainingTime <= 0)
-                {
-                    UpdateMissionStatus(missionId.ToString());
-
-                    MoveMissionToHistory(missionId);
-
-                    SendButton.Enabled = true;
-
-                    MessageBox.Show("mission Completed!");
-                    CountdownTimer.Stop();
-                }
-            }
-
-            populateListViewWithMissions();
-            populateListViewHistoryMissions();
-        }
-
-        private void MoveMissionToHistory(int missionId)
+        public void MoveMissionToHistory(int missionId)
         {
             try
             {
-                string query = "INSERT INTO mission_history (assassin_id, mission_id) VALEUS (@assassinId, @missionId)";
-                MySqlCommand moveToHistory = new MySqlCommand(query, connection);
-                moveToHistory.Parameters.AddWithValue("@assassinId", GetAssassinId());
-                moveToHistory.Parameters.AddWithValue("@missionId", missionId);
+                int assassinId = (int)GetAssassinId(missionId);
 
-                connection.Open();
-                moveToHistory.ExecuteNonQuery();
+                if(assassinId != -1)
+                {
+                    string query = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
+                    MySqlCommand moveToHistory = new MySqlCommand(query, connection);
+                    moveToHistory.Parameters.AddWithValue("@assassinId", assassinId);
+                    moveToHistory.Parameters.AddWithValue("@missionId", missionId);
+
+                    connection.Open();
+                    moveToHistory.ExecuteNonQuery();
+                }
+                else
+                {
+                    MessageBox.Show("Assassin ID not found for mission ID: " + missionId);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error moving mission to history: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+        private object GetAssassinId(int missionId)
+        {
+            int assassinId = -1;
+
+            try
+            {
+                string assassinQuery = "SELECT assassin_id FROM mission WHERE mission_id =@missionId;";
+                using (MySqlCommand assassinCommand = new MySqlCommand (assassinQuery, connection))
+                {
+                    assassinCommand.Parameters.AddWithValue("@missionId", missionId);
+
+                    connection.Open();
+                    object result = assassinCommand.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        assassinId = Convert.ToInt32(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error getting assassin ID: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return assassinId;
         }
 
         private void UppdateRemainingTimeForMission(int missionId, int remainingTime)
