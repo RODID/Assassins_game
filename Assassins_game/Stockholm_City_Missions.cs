@@ -33,16 +33,15 @@ namespace Assassins_game
             listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
 
+        }
+
+        public void MissionTimer_Tick(object? sender, EventArgs e)
+        {
             missionTimer = new System.Windows.Forms.Timer();
             missionTimer.Enabled = true;
             missionTimer.Interval = 1000;
             missionTimer.Tick += MissionTimer_Tick;
 
-            
-        }
-
-        public void MissionTimer_Tick(object? sender, EventArgs e)
-        {
             int missionId = (int)missionTimer.Tag;
             int missionDurationInSeconds = db.GetMissionDuration(missionId);
 
