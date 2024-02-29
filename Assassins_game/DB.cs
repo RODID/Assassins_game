@@ -37,8 +37,9 @@ namespace Assassins_game
                         string missionDescription = reader["mission_description"].ToString();
                         string missionLocation = reader["mission_location"].ToString();
                         TimeSpan missionDuration = TimeSpan.Parse(reader["mission_time"].ToString()); ;
-                        
-                        Missions mission = new Missions(missionId, missionName, missionDescription, missionLocation, missionDuration,);
+                        bool completed = Convert.ToBoolean(reader["completed"]);
+
+                        Missions mission = new Missions(missionId, missionName, missionDescription, missionLocation, missionDuration, completed);
                         missions.Add(mission);
                     }
                 }
