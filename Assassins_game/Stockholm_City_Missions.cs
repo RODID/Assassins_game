@@ -20,7 +20,6 @@ namespace Assassins_game
         private MySqlConnection connection;
         DB db = new DB();
         private System.Windows.Forms.Timer missionTimer;
-        
 
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
@@ -29,48 +28,39 @@ namespace Assassins_game
 
 
             this.connection = mySqlConnection;
-            populateListViewWithMissions();
-            populateListViewHistoryMissions();
+            PopulateListViewWithMissions();
+            PopulateListViewHistoryMissions();
             listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
 
             missionTimer = new System.Windows.Forms.Timer();
+            missionTimer.Enabled = true;
             missionTimer.Interval = 1000;
             missionTimer.Tick += MissionTimer_Tick;
 
             
         }
 
-        private void MissionTimer_Tick(object? sender, EventArgs e)
+        public void MissionTimer_Tick(object? sender, EventArgs e)
         {
+            int missionId = (int)missionTimer.Tag;
+            int missionDurationInSeconds = db.GetMissionDuration(missionId);
 
+            missionTimer.Interval = missionDurationInSeconds * 1000;
+
+            missionTimer.Start();
+
+            if(db.GetMissionDuration(missionId) <= 0 ) 
+            {
+                
+            }
         }
 
-        private void UpdateMissionStatus(string missionId)
+        private void PopulateListViewHistoryMissions()
         {
             try
             {
-                string query = "UPDATE mission SET mission_status = 'Completed' WHERE mission_id = @missionId";
-                MySqlCommand updateTime = new MySqlCommand(query, connection);
-                updateTime.Parameters.AddWithValue("@missionId", missionId);
-
-                connection.Open();
-                updateTime.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating mission status: " + ex.Message);
-            }
-            finally 
-            {
-                connection.Close();
-            }
-        }
-        private void populateListViewHistoryMissions()
-        {
-            try
-            {
-                string query = "SELECT mission_id, mission_name FROM mission where mission_status = 'Completed'";
+                string query = "SELECT mission_id, mission_name FROM mission where completed = '1'";
                 MySqlCommand updateTime = new MySqlCommand(query, connection);
 
                 connection.Open();
@@ -106,7 +96,7 @@ namespace Assassins_game
 
         }
 
-        private void populateListViewWithMissions()
+        private void PopulateListViewWithMissions()
         {
             try
             {
@@ -149,7 +139,10 @@ namespace Assassins_game
                 int missionDurationInSeconds = db.GetMissionDuration(missionId);
                 if(missionDurationInSeconds > 0)
                 {
-                    StartMissionTimer(missionId, missionDurationInSeconds);
+                    missionTimer.Tag = missionId;
+
+                    missionTimer.Start();
+
                 }
                 else
                 {
@@ -180,7 +173,7 @@ namespace Assassins_game
 
         private void MissionLoadButton_Click(object sender, EventArgs e)
         {
-            populateListViewWithMissions();
+            PopulateListViewWithMissions();
         }
 
         private void listViewMissions_SelectedIndexChanged(object sender, EventArgs e)
