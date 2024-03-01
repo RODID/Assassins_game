@@ -20,18 +20,32 @@ namespace Assassins_game
             return new MySqlConnection(connectionString);
         }
 
-        public List<Assassins> GetAssassins() 
+        public int GetAssassinId(int missionId)
         {
-            List<Assassins>assassins = new List<Assassins>();
+            int assassinId = -1;
 
-            using(MySqlConnection connection = GetConnection())
+            try
             {
-                connection.Open();
-
-                string assassinQuery = "SELECT * FROM assassins;";
-                MySqlCommand assassinQuery
+                string assassinQuery = "SELECT assassin_id FROM mission WHERE mission_id = @missionId";
+                using (MySqlConnection connection = GetConnection())
+                using (MySqlCommand assassinCommand = new MySqlCommand(assassinQuery, connection))
+                {
+                    assassinCommand.Parameters.AddWithValue("@missionId", missionId);
+                    connection.Open();
+                    object result = assassinCommand.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        assassinId = Convert.ToInt32(result);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error getting assassin ID: " + ex.Message);
+            }
+            return assassinId;
         }
+
         public List<Missions> GetMissions()
         {
             List<Missions> missions = new List<Missions>();

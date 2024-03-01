@@ -171,11 +171,14 @@ namespace Assassins_game
             }
         }
 
-        public void SendButton_Click(object sender, EventArgs e)
+        private void SendButton_Click(object sender, EventArgs e)
         {
             try
             {
-                if (listViewMissions.SelectedItems.Count > 0)
+                if (listViewMissions.SelectedItems.Count > 0 && ListAssassinsForMissions.SelectedItems.Count > 0)
+                {
+                    string selectedMissionText = listViewMissions.SelectedItems[0].Text;
+                }
                 {
                     string selectedItemText = listViewMissions.SelectedItems[0].Text;
                     int missionId = int.Parse(selectedItemText.Split(' ')[0]);
