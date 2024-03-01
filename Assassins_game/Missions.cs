@@ -9,6 +9,7 @@ namespace Assassins_game
 {
     public class Missions
     {
+        DB db = new DB();
         public Missions(int mission_id, string mission_name, string mission_description, string mission_Location, TimeSpan mission_Time, bool completed)
         {
             Mission_id = mission_id;

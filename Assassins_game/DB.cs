@@ -11,11 +11,26 @@ namespace Assassins_game
 {
     public class DB
     {
+        public Assassins assassins;
         public Missions missions;
-        private string connectionString = "server=localhost;uid=root;password=arjan123;database=Assassins_DB";
+        private string connectionString = "server=localhost;uid=root;password=arjan123;database=Assassins_DB;";
+        
         public MySqlConnection GetConnection()
         {
             return new MySqlConnection(connectionString);
+        }
+
+        public List<Assassins> GetAssassins() 
+        {
+            List<Assassins>assassins = new List<Assassins>();
+
+            using(MySqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                string assassinQuery = "SELECT * FROM assassins;";
+                MySqlCommand assassinQuery
+            }
         }
         public List<Missions> GetMissions()
         {
@@ -25,7 +40,7 @@ namespace Assassins_game
             {
                 connection.Open();
 
-                string query = "SELECT * FROM mission";
+                string query = "SELECT * FROM mission;";
                 MySqlCommand command = new MySqlCommand(query, connection);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -57,7 +72,7 @@ namespace Assassins_game
                 {
                     connection.Open();
 
-                    string query = "SELECT assassin_id FROM assassins WHERE assassin_name = @username";
+                    string query = "SELECT assassin_id FROM assassins WHERE assassin_name = @username;";
                     MySqlCommand getAssassinId = new MySqlCommand(query, connection);
                     getAssassinId.Parameters.AddWithValue("@username", username);
 
@@ -91,11 +106,9 @@ namespace Assassins_game
                     MySqlCommand durationCommand = new MySqlCommand(durationQuery, connection);
                     durationCommand.Parameters.AddWithValue("@missionId", missionId);
 
-                    object result = durationCommand.ExecuteScalar();
-                    if (result != null && result != DBNull.Value)
-                    {
-                        missionDuration = Convert.ToInt32(result);
-                    }
+                    TimeSpan result = (TimeSpan)durationCommand.ExecuteScalar();
+                    missionDuration = (int)result.TotalSeconds;
+                    
                 }
                 catch (Exception ex)
                 {

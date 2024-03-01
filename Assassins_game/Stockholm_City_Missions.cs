@@ -15,7 +15,7 @@ using System.Timers;
 
 namespace Assassins_game
 {
-    public partial class Stockholm_City_Missions : Assassin_Scandinavia
+    public partial class Stockholm_City_Missions : Form
     {
         private MySqlConnection connection;
         private DB db = new DB();
@@ -24,29 +24,29 @@ namespace Assassins_game
         public Stockholm_City_Missions(MySqlConnection mySqlConnection)
         {
             InitializeComponent();
-            MissionLoadButton.Click += MissionLoadButton_Click;
 
 
             this.connection = mySqlConnection;
-            
-            
 
-            PopulateListViewWithMissions();
+            missionTimer = new System.Windows.Forms.Timer();
+            missionTimer.Tick += MissionTimerEnd_Tick;
+
             listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
+            PopulateListViewWithMissions();
 
         }
 
-        private void MissionTimer_Tick(object? sender, EventArgs e)
+        public void MissionTimerEnd_Tick(object? sender, EventArgs e)
         {
             missionTimer.Stop();
 
-            if (sender is System.Windows.Forms.Timer timer) 
+            if (sender != null && sender is System.Windows.Forms.Timer timer)
             {
                 int missionId = (int)timer.Tag;
                 MoveMissionToHistory(missionId);
                 UppdateMissionStatus(missionId);
-                
+
             }
             else
             {
@@ -64,6 +64,7 @@ namespace Assassins_game
             }
         }
 
+        
         private void PopulateListViewHistoryMissions()
         {
             try
@@ -86,41 +87,74 @@ namespace Assassins_game
                     reader.Close();
                 }
                 connection.Close();
-                
+
             }
-            catch ( Exception ex ) 
+            catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            finally 
-            { 
+            finally
+            {
                 connection.Close();
             }
-          
+
         }
 
         public void Stockholm_City_Missions_Load(object sender, EventArgs e)
         {
-            PopulateListViewWithMissions();
+            return;
+
+        }
+
+        private void PopulateListViewAssassins(object sender, EventArgs e)
+        {
+            try
+            {
+                db.GetConnection().Open();
+
+                MySqlCommand assassinCommand = new MySqlCommand();
+                using (MySqlDataReader assassinReader = assassinCommand.ExecuteReader())
+                {
+                    while (assassinReader.Read())
+                    {
+                        int assassinId = assassinReader.GetInt32("assassin_id");
+                        string assassinName = assassinReader.GetString("assassin_name");
+                        string assassinRank = assassinReader.GetString("assassin_rank");
+                        string assassinWeapon = assassinReader.GetString("assassin_weapon");
+                        string assassinInfo = $"{assassinId}{assassinName}{assassinRank}{assassinWeapon}";
+
+                        ListAssassinsForMissions.Items.Add(assassinInfo);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
         }
 
         private void PopulateListViewWithMissions()
         {
             try
             {
-                string query = "SELECT mission_id, mission_name FROM mission";
-                MySqlCommand command = new MySqlCommand(query, connection);
+                string missionQuery = "SELECT mission_id, mission_name FROM mission";
+                MySqlCommand missionCommand = new MySqlCommand(missionQuery, connection);
 
                 connection.Open();
 
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlDataReader missionReader = missionCommand.ExecuteReader())
                 {
                     listViewMissions.Items.Clear();
 
-                    while (reader.Read())
+                    while (missionReader.Read())
                     {
-                        int missionId = reader.GetInt32("mission_id");
-                        string missionName = reader.GetString("mission_name");
+                        int missionId = missionReader.GetInt32("mission_id");
+                        string missionName = missionReader.GetString("mission_name");
                         string missionInfo = $"{missionId} {missionName}";
 
                         listViewMissions.Items.Add(missionInfo);
@@ -137,7 +171,7 @@ namespace Assassins_game
             }
         }
 
-        private void SendButton_Click(object sender, EventArgs e)
+        public void SendButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -146,33 +180,64 @@ namespace Assassins_game
                     string selectedItemText = listViewMissions.SelectedItems[0].Text;
                     int missionId = int.Parse(selectedItemText.Split(' ')[0]);
 
-                    int missionDurationInSeconds = db.GetMissionDuration(missionId);
-                    if (missionDurationInSeconds > 0)
+                    if (sender == SendMissionButton)
                     {
-                        missionTimer.Interval = missionDurationInSeconds * 1000;
-
-                        missionTimer.Tag = missionId;
-                        missionTimer.Start();
-
+                        MissionExecutionTimer(missionId);
                     }
-                    else
-                    {
-                        MessageBox.Show("Mission Duration is not valid. come back to this mission later!");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please select a mission to start! ");
+
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            
+            return;
+
         }
 
-        
+        private void MissionExecutionTimer(int missionId)
+        {
+
+            int missionDurationInSeconds = db.GetMissionDuration(missionId);
+
+            if (missionDurationInSeconds > 0)
+            {
+                missionTimer.Interval = 1000;
+                missionTimer.Tag = missionId;
+                missionTimer.Start();
+                UpdateRemainingTimeForMissions(missionId, missionDurationInSeconds);
+                UpdateRemainingTimeInUI(missionId);
+
+                missionTimer.Tick += (sender, e) =>
+                {
+                    missionDurationInSeconds--;
+                    UpdateRemainingTimeInUI(missionDurationInSeconds);
+
+                    if (missionDurationInSeconds <= 0)
+                    {
+                        missionTimer.Stop();
+                        MissionTimerEnd_Tick(missionTimer, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        UpdateRemainingTimeForMissions(missionId, missionDurationInSeconds);
+                    }
+
+                };
+
+            }
+            else
+            {
+                MessageBox.Show("Mission Duration is not valid. Come back to this mission later!");
+            }
+            return;
+        }
+
+        private void UpdateRemainingTimeInUI(int remainingTimeInSeconds)
+        {
+            TimeSpan remainingTime = TimeSpan.FromSeconds(remainingTimeInSeconds);
+            remainingTimeLabel.Text = remainingTime.ToString(@"hh/:mm/:ss");
+        }
 
         private void StartMissionTimer(int missionId, int missionDurrationInSeconds)
         {
@@ -190,6 +255,7 @@ namespace Assassins_game
 
         private void MissionLoadButton_Click(object sender, EventArgs e)
         {
+            MissionLoadButton.Click += MissionLoadButton_Click;
             PopulateListViewWithMissions();
         }
 
@@ -236,7 +302,7 @@ namespace Assassins_game
 
         }
 
-        
+
 
         public void MoveMissionToHistory(int missionId)
         {
@@ -244,7 +310,7 @@ namespace Assassins_game
             {
                 int assassinId = (int)GetAssassinId(missionId);
 
-                if(assassinId != -1)
+                if (assassinId != -1)
                 {
                     string query = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
                     MySqlCommand moveToHistory = new MySqlCommand(query, connection);
@@ -277,7 +343,7 @@ namespace Assassins_game
             try
             {
                 string assassinQuery = "SELECT assassin_id FROM mission WHERE mission_id =@missionId;";
-                using (MySqlCommand assassinCommand = new MySqlCommand (assassinQuery, connection))
+                using (MySqlCommand assassinCommand = new MySqlCommand(assassinQuery, connection))
                 {
                     assassinCommand.Parameters.AddWithValue("@missionId", missionId);
 
@@ -300,7 +366,7 @@ namespace Assassins_game
             return assassinId;
         }
 
-        private void UppdateRemainingTimeForMission(int missionId, int remainingTime)
+        private void UpdateRemainingTimeForMissions(int missionId, int remainingTime)
         {
             try
             {
@@ -312,7 +378,7 @@ namespace Assassins_game
                 connection.Open();
                 timeUpdate.ExecuteNonQuery();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error updating remaining time for mission: " + ex.Message);
             }
@@ -350,7 +416,6 @@ namespace Assassins_game
 
         }
 
-
-
+        
     }
 }

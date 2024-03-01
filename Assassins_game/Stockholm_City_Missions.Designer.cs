@@ -29,24 +29,16 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            SendButton = new Button();
             GoBackButton = new Button();
             MissionLoadButton = new Button();
             listViewMissions = new ListView();
             missionDescriptionTextBox = new TextBox();
             listViewHistoryMission = new ListView();
             CountdownTimer = new System.Windows.Forms.Timer(components);
+            SendMissionButton = new Button();
+            remainingTimeLabel = new Label();
+            ListAssassinsForMissions = new ListView();
             SuspendLayout();
-            // 
-            // SendButton
-            // 
-            SendButton.Location = new Point(346, 319);
-            SendButton.Name = "SendButton";
-            SendButton.Size = new Size(94, 29);
-            SendButton.TabIndex = 1;
-            SendButton.Text = "Send";
-            SendButton.UseVisualStyleBackColor = true;
-            SendButton.Click += SendButton_Click;
             // 
             // GoBackButton
             // 
@@ -89,9 +81,9 @@
             // 
             // listViewHistoryMission
             // 
-            listViewHistoryMission.Location = new Point(46, 311);
+            listViewHistoryMission.Location = new Point(46, 275);
             listViewHistoryMission.Name = "listViewHistoryMission";
-            listViewHistoryMission.Size = new Size(270, 108);
+            listViewHistoryMission.Size = new Size(270, 144);
             listViewHistoryMission.TabIndex = 5;
             listViewHistoryMission.UseCompatibleStateImageBehavior = false;
             listViewHistoryMission.View = View.List;
@@ -101,17 +93,48 @@
             CountdownTimer.Enabled = true;
             CountdownTimer.Tick += SendButton_Click;
             // 
+            // SendMissionButton
+            // 
+            SendMissionButton.Location = new Point(346, 315);
+            SendMissionButton.Name = "SendMissionButton";
+            SendMissionButton.Size = new Size(94, 29);
+            SendMissionButton.TabIndex = 6;
+            SendMissionButton.Text = "Send";
+            SendMissionButton.UseVisualStyleBackColor = true;
+            SendMissionButton.Click += SendButton_Click;
+            // 
+            // remainingTimeLabel
+            // 
+            remainingTimeLabel.AutoSize = true;
+            remainingTimeLabel.Location = new Point(87, 245);
+            remainingTimeLabel.Name = "remainingTimeLabel";
+            remainingTimeLabel.Size = new Size(63, 20);
+            remainingTimeLabel.TabIndex = 7;
+            remainingTimeLabel.Text = "00:00:00";
+            // 
+            // ListAssassinsForMissions
+            // 
+            ListAssassinsForMissions.Location = new Point(37, 439);
+            ListAssassinsForMissions.Name = "ListAssassinsForMissions";
+            ListAssassinsForMissions.Size = new Size(689, 143);
+            ListAssassinsForMissions.TabIndex = 8;
+            ListAssassinsForMissions.UseCompatibleStateImageBehavior = false;
+            ListAssassinsForMissions.View = View.List;
+            ListAssassinsForMissions.SelectedIndexChanged += PopulateListViewAssassins;
+            // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 1056);
+            Controls.Add(ListAssassinsForMissions);
+            Controls.Add(remainingTimeLabel);
+            Controls.Add(SendMissionButton);
             Controls.Add(listViewHistoryMission);
             Controls.Add(missionDescriptionTextBox);
             Controls.Add(listViewMissions);
             Controls.Add(MissionLoadButton);
             Controls.Add(GoBackButton);
-            Controls.Add(SendButton);
             Name = "Stockholm_City_Missions";
             Text = "Stockholm_City_Missions";
             Load += Stockholm_City_Missions_Load;
@@ -120,12 +143,14 @@
         }
 
         #endregion
-        private Button SendButton;
         private Button GoBackButton;
         private Button MissionLoadButton;
         private ListView listViewMissions;
         private TextBox missionDescriptionTextBox;
         private ListView listViewHistoryMission;
         private System.Windows.Forms.Timer CountdownTimer;
+        private Button SendMissionButton;
+        private Label remainingTimeLabel;
+        private ListView ListAssassinsForMissions;
     }
 }

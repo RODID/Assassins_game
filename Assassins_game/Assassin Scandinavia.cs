@@ -16,9 +16,11 @@ namespace Assassins_game
         private readonly DB db = new DB();
         private List<Missions> StockholmMissions = new List<Missions>();
         List<Missions> missions = new List<Missions>();
+        List <Assassins> assassins = new List<Assassins>();
         public Assassin_Scandinavia()
         {
             InitializeComponent();
+            stockholm_City_Missions = new Stockholm_City_Missions(db.GetConnection());
         }
 
         private void Assassin_Scandinavia_Load(object sender, EventArgs e)
