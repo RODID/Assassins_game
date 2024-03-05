@@ -28,13 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             GoBackButton = new Button();
             MissionLoadButton = new Button();
             listViewMissions = new ListView();
             missionDescriptionTextBox = new TextBox();
             listViewHistoryMission = new ListView();
-            CountdownTimer = new System.Windows.Forms.Timer(components);
             SendMissionButton = new Button();
             remainingTimeLabel = new Label();
             ListAssassinsForMissions = new ListView();
@@ -88,11 +86,6 @@
             listViewHistoryMission.UseCompatibleStateImageBehavior = false;
             listViewHistoryMission.View = View.List;
             // 
-            // CountdownTimer
-            // 
-            CountdownTimer.Enabled = true;
-            CountdownTimer.Tick += SendButton_Click;
-            // 
             // SendMissionButton
             // 
             SendMissionButton.Location = new Point(346, 315);
@@ -114,13 +107,12 @@
             // 
             // ListAssassinsForMissions
             // 
-            ListAssassinsForMissions.Location = new Point(37, 439);
+            ListAssassinsForMissions.Location = new Point(46, 459);
             ListAssassinsForMissions.Name = "ListAssassinsForMissions";
-            ListAssassinsForMissions.Size = new Size(689, 143);
-            ListAssassinsForMissions.TabIndex = 8;
+            ListAssassinsForMissions.Size = new Size(680, 121);
+            ListAssassinsForMissions.TabIndex = 9;
             ListAssassinsForMissions.UseCompatibleStateImageBehavior = false;
             ListAssassinsForMissions.View = View.List;
-            ListAssassinsForMissions.SelectedIndexChanged += PopulateListViewAssassins;
             // 
             // Stockholm_City_Missions
             // 
@@ -148,7 +140,6 @@
         private ListView listViewMissions;
         private TextBox missionDescriptionTextBox;
         private ListView listViewHistoryMission;
-        private System.Windows.Forms.Timer CountdownTimer;
         private Button SendMissionButton;
         private Label remainingTimeLabel;
         private ListView ListAssassinsForMissions;

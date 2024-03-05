@@ -14,9 +14,8 @@ namespace Assassins_game
     {
         private Stockholm_City_Missions stockholm_City_Missions;
         private readonly DB db = new DB();
-        private List<Missions> StockholmMissions = new List<Missions>();
-        List<Missions> missions = new List<Missions>();
-        List <Assassins> assassins = new List<Assassins>();
+        private List<Missions> Missions = new List<Missions>();
+        
         public Assassin_Scandinavia()
         {
             InitializeComponent();
@@ -42,9 +41,9 @@ namespace Assassins_game
         private void RefreshMissions()
         {
             List<Missions> allMissions = db.GetMissions();
-            StockholmMissions = allMissions.Where(m => m.Mission_Location == "Stockholm").ToList();
+            Missions = allMissions.Where(m => m.Mission_Location == "Stockholm").ToList();
 
-            RefreshButtonMissionList(Stockholm_Mission_Button, StockholmMissions);
+            RefreshButtonMissionList(Stockholm_Mission_Button, Missions);
             
         }
 

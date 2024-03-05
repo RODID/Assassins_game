@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 using static Mysqlx.Crud.UpdateOperation.Types;
@@ -11,8 +12,9 @@ namespace Assassins_game
 {
     public class DB
     {
-        public Assassins assassins;
-        public Missions missions;
+        public Assassins Assassins;
+        public Missions mission;
+
         private string connectionString = "server=localhost;uid=root;password=arjan123;database=Assassins_DB;";
         
         public MySqlConnection GetConnection()
@@ -76,91 +78,38 @@ namespace Assassins_game
             return missions;
         }
 
-        public int GetAssassinId(string username)
-        {
-            int assassinId = -1; 
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                try
-                {
-                    connection.Open();
-
-                    string query = "SELECT assassin_id FROM assassins WHERE assassin_name = @username;";
-                    MySqlCommand getAssassinId = new MySqlCommand(query, connection);
-                    getAssassinId.Parameters.AddWithValue("@username", username);
-
-                    object result = getAssassinId.ExecuteScalar();
-                    if (result != null)
-                    {
-                        assassinId = Convert.ToInt32(result);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error getting assassin ID: " + ex.Message);
-                }
-            }
-
-            return assassinId;
-        }
+        
 
         
-        public int GetMissionDuration(int missionId)
+        public void MoveMissionToHistory(int missionId, MySqlConnection connection)
         {
-            int missionDuration = 0;
-
-            using (MySqlConnection connection = GetConnection())
+            try
             {
-                try
-                {
-                    connection.Open();
+                int assassinId = (int)GetAssassinId(missionId);
 
-                    string durationQuery = "SELECT mission_time FROM mission WHERE mission_id =@missionId;";
-                    MySqlCommand durationCommand = new MySqlCommand(durationQuery, connection);
-                    durationCommand.Parameters.AddWithValue("@missionId", missionId);
-
-                    TimeSpan result = (TimeSpan)durationCommand.ExecuteScalar();
-                    missionDuration = (int)result.TotalSeconds;
-                    
-                }
-                catch (Exception ex)
+                if (assassinId != -1)
                 {
-                    MessageBox.Show("Error getting mission duration: " + ex.Message);
-                }
-            }
-            return missionDuration;
-        }
-
-        public void UppdateMissionStatus(int missionId, MySqlConnection connection)
-        {
-            try 
-            {
-                
-                string missionStatusQuery = "UPDATE mission SET completed = 1 WHERE mission_id = @missionId;";
-                using (MySqlCommand updateTime = new MySqlCommand(missionStatusQuery, connection))
-                {
-                    updateTime.Parameters.AddWithValue("@missionId", missionId);
+                    string query = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
+                    MySqlCommand moveToHistory = new MySqlCommand(query, connection);
+                    moveToHistory.Parameters.AddWithValue("@assassinId", assassinId);
+                    moveToHistory.Parameters.AddWithValue("@missionId", missionId);
 
                     connection.Open();
-                    updateTime.ExecuteNonQuery();
+                    moveToHistory.ExecuteNonQuery();
                 }
-                
+                else
+                {
+                    MessageBox.Show("Assassin ID not found for mission ID: " + missionId);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error Updating Mission status: " + ex.Message);
+                MessageBox.Show("Error moving mission to history: " + ex.Message);
             }
             finally
             {
                 connection.Close();
             }
-            
         }
-        
-        
-
-        
-        
     }
 }
