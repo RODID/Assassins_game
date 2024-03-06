@@ -32,15 +32,15 @@
             MissionLoadButton = new Button();
             listViewMissions = new ListView();
             missionDescriptionTextBox = new TextBox();
-            listViewHistoryMission = new ListView();
             SendMissionButton = new Button();
-            remainingTimeLabel = new Label();
             ListAssassinsForMissions = new ListView();
+            listViewHistoryMission = new ListView();
+            AddingMissions = new Button();
             SuspendLayout();
             // 
             // GoBackButton
             // 
-            GoBackButton.Location = new Point(346, 354);
+            GoBackButton.Location = new Point(241, 602);
             GoBackButton.Name = "GoBackButton";
             GoBackButton.Size = new Size(94, 29);
             GoBackButton.TabIndex = 1;
@@ -50,7 +50,7 @@
             // 
             // MissionLoadButton
             // 
-            MissionLoadButton.Location = new Point(346, 268);
+            MissionLoadButton.Location = new Point(41, 602);
             MissionLoadButton.Name = "MissionLoadButton";
             MissionLoadButton.Size = new Size(94, 29);
             MissionLoadButton.TabIndex = 2;
@@ -62,7 +62,7 @@
             // 
             listViewMissions.Location = new Point(484, 36);
             listViewMissions.Name = "listViewMissions";
-            listViewMissions.Size = new Size(242, 383);
+            listViewMissions.Size = new Size(283, 383);
             listViewMissions.TabIndex = 3;
             listViewMissions.UseCompatibleStateImageBehavior = false;
             listViewMissions.View = View.List;
@@ -70,25 +70,16 @@
             // 
             // missionDescriptionTextBox
             // 
-            missionDescriptionTextBox.Location = new Point(46, 54);
+            missionDescriptionTextBox.Location = new Point(12, 36);
             missionDescriptionTextBox.Multiline = true;
             missionDescriptionTextBox.Name = "missionDescriptionTextBox";
             missionDescriptionTextBox.Size = new Size(394, 176);
             missionDescriptionTextBox.TabIndex = 4;
             missionDescriptionTextBox.TextChanged += missionDescriptionTextBox_TextChanged;
             // 
-            // listViewHistoryMission
-            // 
-            listViewHistoryMission.Location = new Point(46, 275);
-            listViewHistoryMission.Name = "listViewHistoryMission";
-            listViewHistoryMission.Size = new Size(270, 144);
-            listViewHistoryMission.TabIndex = 5;
-            listViewHistoryMission.UseCompatibleStateImageBehavior = false;
-            listViewHistoryMission.View = View.List;
-            // 
             // SendMissionButton
             // 
-            SendMissionButton.Location = new Point(346, 315);
+            SendMissionButton.Location = new Point(141, 602);
             SendMissionButton.Name = "SendMissionButton";
             SendMissionButton.Size = new Size(94, 29);
             SendMissionButton.TabIndex = 6;
@@ -96,31 +87,41 @@
             SendMissionButton.UseVisualStyleBackColor = true;
             SendMissionButton.Click += SendButton_Click;
             // 
-            // remainingTimeLabel
-            // 
-            remainingTimeLabel.AutoSize = true;
-            remainingTimeLabel.Location = new Point(87, 245);
-            remainingTimeLabel.Name = "remainingTimeLabel";
-            remainingTimeLabel.Size = new Size(63, 20);
-            remainingTimeLabel.TabIndex = 7;
-            remainingTimeLabel.Text = "00:00:00";
-            // 
             // ListAssassinsForMissions
             // 
-            ListAssassinsForMissions.Location = new Point(46, 459);
+            ListAssassinsForMissions.Location = new Point(12, 462);
             ListAssassinsForMissions.Name = "ListAssassinsForMissions";
-            ListAssassinsForMissions.Size = new Size(680, 121);
+            ListAssassinsForMissions.Size = new Size(755, 121);
             ListAssassinsForMissions.TabIndex = 9;
             ListAssassinsForMissions.UseCompatibleStateImageBehavior = false;
             ListAssassinsForMissions.View = View.List;
+            // 
+            // listViewHistoryMission
+            // 
+            listViewHistoryMission.Location = new Point(12, 245);
+            listViewHistoryMission.Name = "listViewHistoryMission";
+            listViewHistoryMission.Size = new Size(366, 174);
+            listViewHistoryMission.TabIndex = 5;
+            listViewHistoryMission.UseCompatibleStateImageBehavior = false;
+            listViewHistoryMission.View = View.List;
+            // 
+            // AddingMissions
+            // 
+            AddingMissions.Location = new Point(341, 602);
+            AddingMissions.Name = "AddingMissions";
+            AddingMissions.Size = new Size(94, 29);
+            AddingMissions.TabIndex = 10;
+            AddingMissions.Text = "Missions";
+            AddingMissions.UseVisualStyleBackColor = true;
+            AddingMissions.Click += AddingMissions_Click;
             // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 1056);
+            Controls.Add(AddingMissions);
             Controls.Add(ListAssassinsForMissions);
-            Controls.Add(remainingTimeLabel);
             Controls.Add(SendMissionButton);
             Controls.Add(listViewHistoryMission);
             Controls.Add(missionDescriptionTextBox);
@@ -139,9 +140,9 @@
         private Button MissionLoadButton;
         private ListView listViewMissions;
         private TextBox missionDescriptionTextBox;
-        private ListView listViewHistoryMission;
         private Button SendMissionButton;
-        private Label remainingTimeLabel;
         private ListView ListAssassinsForMissions;
+        private ListView listViewHistoryMission;
+        private Button AddingMissions;
     }
 }

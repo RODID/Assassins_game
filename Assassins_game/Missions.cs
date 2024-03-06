@@ -10,22 +10,19 @@ namespace Assassins_game
     public class Missions
     {
         DB db = new DB();
-        public Missions(int mission_id, string mission_name, string mission_description, string mission_Location, TimeSpan mission_Time, bool completed)
+
+        public Missions(int missionId, string missionName, string missionDescription, string missionLocation)
         {
-            Mission_id = mission_id;
-            Mission_name = mission_name;
-            Mission_description = mission_description;
-            Mission_Location = mission_Location;
-            Mission_Time = mission_Time;
-            Completed = completed;
+            this.missionId = missionId;
+            this.missionName = missionName;
+            this.missionDescription = missionDescription;
+            this.missionLocation = missionLocation;
         }
 
-        public int Mission_id { get; set; }
-        public string Mission_name { get; set; }
-        public string Mission_description { get; set; }
-        public string Mission_Location { get; set; }
-        public TimeSpan Mission_Time { get; set; }
-        public bool Completed { get; set; } 
+        public int missionId { get; set; }
+        public string missionName { get; set; }
+        public string missionDescription { get; set; }
+        public string missionLocation { get; set; }
 
 
     }
