@@ -32,6 +32,7 @@
             missionDescriptionTextBoxAdd = new TextBox();
             label1 = new Label();
             label2 = new Label();
+            AddButtonPress = new Button();
             SuspendLayout();
             // 
             // missionNameTextBox
@@ -68,11 +69,22 @@
             label2.TabIndex = 1;
             label2.Text = "Description";
             // 
+            // AddButtonPress
+            // 
+            AddButtonPress.Location = new Point(240, 278);
+            AddButtonPress.Name = "AddButtonPress";
+            AddButtonPress.Size = new Size(94, 29);
+            AddButtonPress.TabIndex = 2;
+            AddButtonPress.Text = "Add";
+            AddButtonPress.UseVisualStyleBackColor = true;
+            AddButtonPress.Click += AddButtonPress_Click;
+            // 
             // Contract
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(AddButtonPress);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(missionDescriptionTextBoxAdd);
@@ -89,5 +101,6 @@
         private TextBox missionDescriptionTextBoxAdd;
         private Label label1;
         private Label label2;
+        private Button AddButtonPress;
     }
 }

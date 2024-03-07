@@ -1,30 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Data.SqlClient;
-using MySql.Data.MySqlClient;
-using System.Linq.Expressions;
-using System.Timers;
-using Timer = System.Timers.Timer;
-using System.Drawing.Text;
+﻿using MySql.Data.MySqlClient;
 
 namespace Assassins_game
 {
     public partial class Stockholm_City_Missions : Form
     {
-        private MySqlConnection connection;
-        private DB db = new();
-        private List<Assassins> assassinslist = new List<Assassins>();
-        private List<History> historylist = new List<History>();
-        private List<Missions> missionslist = new List<Missions>();
-        private int remainingSeconds = 5;
+        public MySqlConnection connection;
+        public DB db = new();
+        public List<Assassins> assassinslist = new List<Assassins>();
+        public List<History> historylist = new List<History>();
+        public List<Missions> missions = new List<Missions>();
+        public int remainingSeconds = 5;
+        public Assassin_Scandinavia assassinScandinavia;
 
 
 
@@ -34,24 +20,47 @@ namespace Assassins_game
 
             this.connection = mySqlConnection;
 
-
             listViewMissions.View = View.List;
             listViewMissions.SelectedIndexChanged += listViewMissions_SelectedIndexChanged;
 
 
+
         }
 
+        public void AddMissionsToList(List<Missions> list)
+        {
+            foreach (Missions mission in list)
+            {
+                string missionInfo = $"{mission.missionId}: {mission.missionName}";
+                listViewMissions.Items.Add(missionInfo);
+            }
+        }
+
+        public void AddMissionsToHistoryList(List<Missions> list)
+        {
+            foreach (Missions mission in list)
+            {
+                string missionInfo = $"{mission.missionId}: {mission.missionName}";
+                listViewHistoryMission.Items.Add(missionInfo);
+            }
+        }
 
         public void Stockholm_City_Missions_Load(object sender, EventArgs e)
         {
-            PopulateAssassinsListView();
             PopulateListViewWithMissions();
+            RefreshLiListViewWithNewAssassins();
+
+
         }
 
         public void PopulateAssassinsListView()
         {
+            HashSet<int> existingAssassinIds = new HashSet<int>();
+            existingAssassinIds.Clear();
+            ListAssassinsForMissions.Clear();
             try
             {
+
                 string assassinQuery = "SELECT assassin_id, assassin_name, assassin_rank FROM assassins;";
                 MySqlCommand assassinCommand = new MySqlCommand(assassinQuery, connection);
 
@@ -61,10 +70,13 @@ namespace Assassins_game
                 {
                     while (assassinReader.Read())
                     {
+                        int assassinId = assassinReader.GetInt32("assassin_id");
                         string assassinName = assassinReader.GetString("assassin_name");
                         string assassinRank = assassinReader.GetString("assassin_rank");
-                        string assassinInfo = $"{assassinName} - Rank: {assassinRank}";
 
+                        existingAssassinIds.Add(assassinId);
+
+                        string assassinInfo = $"{assassinName} - Rank: {assassinRank}";
                         ListAssassinsForMissions.Items.Add(assassinInfo);
                     }
                 }
@@ -80,6 +92,7 @@ namespace Assassins_game
         }
         public void PopulateListViewWithMissions()
         {
+            HashSet<int> missionIds = new HashSet<int>();
             try
             {
                 string missionQuery = "SELECT mission_id, mission_name FROM mission";
@@ -93,10 +106,14 @@ namespace Assassins_game
                     {
                         int missionId = missionReader.GetInt32("mission_id");
                         string missionName = missionReader.GetString("mission_name");
-                        string missionInfo = $"{missionId}: - {missionName}";
 
-                        ListViewItem missionItem = new ListViewItem(missionInfo);
-                        listViewMissions.Items.Add(missionInfo);
+                        if (!missionIds.Contains(missionId))
+                        {
+                            missionIds.Add(missionId);
+                            string missionInfo = $"{missionId} - {missionName}";
+                            ListViewItem misisonItem = new ListViewItem(missionInfo);
+                            listViewMissions.Items.Add(missionInfo);
+                        }
                     }
                 }
             }
@@ -107,6 +124,20 @@ namespace Assassins_game
             finally
             {
                 connection.Close();
+            }
+        }
+
+        public void PopulateJsonMissions(string filePath)
+        {
+            listViewMissions.Items.Clear();
+
+            List<Missions> missions = MissionManager.LoadMissionsFromJson(filePath);
+
+            foreach (Missions missions1 in missions)
+            {
+                string missionInfo = $"{missions1.missionId} - {missions1.missionName}";
+                ListViewItem missionItem = new ListViewItem(missionInfo);
+                listViewMissions.Items.Add(missionItem);
             }
         }
 
@@ -196,10 +227,10 @@ namespace Assassins_game
         }
 
 
-        private void MissionLoadButton_Click(object sender, EventArgs e)
+        public void MissionLoadButton_Click(object sender, EventArgs e)
         {
-            listViewMissions.Items.Clear();
-            ListAssassinsForMissions.Clear();
+            string filePath = "mission.json";
+            PopulateJsonMissions(filePath);
 
             PopulateListViewWithMissions();
             PopulateAssassinsListView();
@@ -255,8 +286,23 @@ namespace Assassins_game
 
         private void AddingMissions_Click(object sender, EventArgs e)
         {
-            Contract contract = new Contract();
-            contract.Show();
+            string missionDescription = missionDescriptionTextBox.Text;
+
+            Contract contract = new Contract(missions, listViewMissions, this, missionDescription);
+            contract.ShowDialog();
+
+        }
+
+        private void RetriveJsonMissionsUpdate_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void RefreshLiListViewWithNewAssassins()
+        {
+            ListAssassinsForMissions.Items.Clear();
+
+            PopulateAssassinsListView();
         }
     }
 }

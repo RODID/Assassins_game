@@ -14,12 +14,13 @@ namespace Assassins_game
     {
         private Stockholm_City_Missions stockholm_City_Missions;
         private readonly DB db = new DB();
-        private List<Missions> Missions = new List<Missions>();
-        
+        public List<Missions> Missions = new List<Missions>();
+        public Contract contract;
         public Assassin_Scandinavia()
         {
             InitializeComponent();
             stockholm_City_Missions = new Stockholm_City_Missions(db.GetConnection());
+            
         }
 
         private void Assassin_Scandinavia_Load(object sender, EventArgs e)
@@ -41,19 +42,19 @@ namespace Assassins_game
         private void RefreshMissions()
         {
             List<Missions> allMissions = db.GetMissions();
-            Missions = allMissions.Where(m => m.Mission_Location == "Stockholm").ToList();
+            Missions = allMissions;
 
             RefreshButtonMissionList(Stockholm_Mission_Button, Missions);
-            
+
         }
 
-        private void RefreshButtonMissionList (Button button, List<Missions> missions)
+        public void RefreshButtonMissionList (Button button, List<Missions> missions)
         {
             button.Text = string.Empty;
 
             foreach (Missions mission in missions)
             {
-                button.Text += mission.Mission_name + Environment.NewLine;
+                button.Text += mission.missionName + Environment.NewLine;
             }
         }
 

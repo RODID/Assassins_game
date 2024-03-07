@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Assassins_game
 {
@@ -11,9 +13,12 @@ namespace Assassins_game
     {
         DB db = new DB();
 
-        public Missions(int missionId, string missionName, string missionDescription, string missionLocation)
+        
+        private static int lastMissionId = 0;
+
+        public Missions(string missionName, string missionDescription, string missionLocation)
         {
-            this.missionId = missionId;
+            this.missionId = lastMissionId;
             this.missionName = missionName;
             this.missionDescription = missionDescription;
             this.missionLocation = missionLocation;

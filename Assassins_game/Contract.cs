@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,37 +13,49 @@ namespace Assassins_game
 {
     public partial class Contract : Form
     {
-        private List<Missions> missions = new List<Missions>();
-        private int missionId = 1;
-        public Contract()
+        private List<Missions> missions;
+        private ListView listViewMissions;
+        private MySqlConnection connection;
+        private Stockholm_City_Missions stockholmCityMissions;
+
+
+        public Contract(List<Missions>missions, ListView listViewMissions, Stockholm_City_Missions stockholmCityMissions, string missionDescription)
         {
+           
             InitializeComponent();
-        }
-        public void AddMissionsToList()
+            this.missions = missions;
+            this.listViewMissions = listViewMissions;
+            this.connection = connection;
+            this.stockholmCityMissions = stockholmCityMissions;
+            missionDescriptionTextBoxAdd.Text = missionDescription;
+            
+
+        } 
+
+        public void AddButtonPress_Click(object sender, EventArgs e)
         {
-            string missionName = missionNameTextBox.Text;
-            string missionDescription = missionDescriptionTextBoxAdd.Text;
-
-            if (!string.IsNullOrEmpty(missionName) && !string.IsNullOrEmpty(missionDescription))
+            try
             {
-                Missions newMission = new Missions (0, missionName,missionDescription, "");
-                missions.Add(newMission);
-                missionId++;
+                string missionName = missionNameTextBox.Text;
+                string missionDescription = missionDescriptionTextBoxAdd.Text;
 
-                UpdateMissionListUI();
+                MissionManager.AddMission(missions, missionName, missionDescription, "");
+
+                string filePath = "mission.json";
+                stockholmCityMissions.PopulateJsonMissions(filePath);MissionManager.SaveMissionsToJson(missions, filePath);
 
                 missionNameTextBox.Clear();
                 missionDescriptionTextBoxAdd.Clear();
+
+                stockholmCityMissions.PopulateListViewWithMissions();
             }
-            else
+            catch(Exception ex)
             {
-                MessageBox.Show("Please fill in the both mission name and description. ");
+                MessageBox.Show("Error: " + ex.Message);
             }
+           
         }
 
-        private void UpdateMissionListUI()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

@@ -36,6 +36,7 @@
             ListAssassinsForMissions = new ListView();
             listViewHistoryMission = new ListView();
             AddingMissions = new Button();
+            RefreshAssassinsListViewButton = new Button();
             SuspendLayout();
             // 
             // GoBackButton
@@ -115,11 +116,22 @@
             AddingMissions.UseVisualStyleBackColor = true;
             AddingMissions.Click += AddingMissions_Click;
             // 
+            // RefreshAssassinsListViewButton
+            // 
+            RefreshAssassinsListViewButton.Location = new Point(441, 602);
+            RefreshAssassinsListViewButton.Name = "RefreshAssassinsListViewButton";
+            RefreshAssassinsListViewButton.Size = new Size(94, 29);
+            RefreshAssassinsListViewButton.TabIndex = 11;
+            RefreshAssassinsListViewButton.Text = "Refresh";
+            RefreshAssassinsListViewButton.UseVisualStyleBackColor = true;
+            RefreshAssassinsListViewButton.Click += RetriveJsonMissionsUpdate_Click;
+            // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 1056);
+            Controls.Add(RefreshAssassinsListViewButton);
             Controls.Add(AddingMissions);
             Controls.Add(ListAssassinsForMissions);
             Controls.Add(SendMissionButton);
@@ -144,5 +156,6 @@
         private ListView ListAssassinsForMissions;
         private ListView listViewHistoryMission;
         private Button AddingMissions;
+        private Button RefreshAssassinsListViewButton;
     }
 }
