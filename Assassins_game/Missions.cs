@@ -14,14 +14,25 @@ namespace Assassins_game
         DB db = new DB();
 
         
-        private static int lastMissionId = 0;
+        public static int lastMissionId = 0;
 
-        public Missions(string missionName, string missionDescription, string missionLocation)
+        [JsonConstructor]
+        public Missions(int missionId, string missionName, string missionDescription, string missionLocation)
         {
             this.missionId = lastMissionId;
             this.missionName = missionName;
             this.missionDescription = missionDescription;
             this.missionLocation = missionLocation;
+            lastMissionId++;
+        }
+
+        public Missions(string missionName = "", string missionDescription = "", string missionLocation = "")
+        {
+            this.missionId = lastMissionId;
+            this.missionName = missionName;
+            this.missionDescription = missionDescription;
+            this.missionLocation = missionLocation;
+            lastMissionId++;
         }
 
         public int missionId { get; set; }

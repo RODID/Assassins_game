@@ -27,24 +27,6 @@ namespace Assassins_game
 
         }
 
-        public void AddMissionsToList(List<Missions> list)
-        {
-            foreach (Missions mission in list)
-            {
-                string missionInfo = $"{mission.missionId}: {mission.missionName}";
-                listViewMissions.Items.Add(missionInfo);
-            }
-        }
-
-        public void AddMissionsToHistoryList(List<Missions> list)
-        {
-            foreach (Missions mission in list)
-            {
-                string missionInfo = $"{mission.missionId}: {mission.missionName}";
-                listViewHistoryMission.Items.Add(missionInfo);
-            }
-        }
-
         public void Stockholm_City_Missions_Load(object sender, EventArgs e)
         {
             PopulateListViewWithMissions();
@@ -133,11 +115,16 @@ namespace Assassins_game
 
             List<Missions> missions = MissionManager.LoadMissionsFromJson(filePath);
 
-            foreach (Missions missions1 in missions)
+            foreach (Missions mission in missions)
             {
-                string missionInfo = $"{missions1.missionId} - {missions1.missionName}";
-                ListViewItem missionItem = new ListViewItem(missionInfo);
-                listViewMissions.Items.Add(missionItem);
+                if(!missions.Any (missions => missions.missionId == mission.missionId))
+                {
+                    string missionInfo = $"{mission.missionId} - {mission.missionName}";
+                    ListViewItem missionItem = new ListViewItem(missionInfo);
+                    listViewMissions.Items.Add(missionItem);
+
+                }
+                
             }
         }
 
@@ -157,13 +144,11 @@ namespace Assassins_game
                     string missionName = missionInfo[2];
                     string assassinName = assassinInfo[1];
                     string missionAssassinInfo = $"{missionId} - {missionName} - {assassinName}";
-
+                    
+                    ListViewItem historyItem = new ListViewItem(missionAssassinInfo);
                     listViewHistoryMission.Items.Add(missionAssassinInfo);
 
                     listViewMissions.Items.Remove(selectedMisionItem);
-
-
-
                 }
 
                 else
@@ -229,9 +214,6 @@ namespace Assassins_game
 
         public void MissionLoadButton_Click(object sender, EventArgs e)
         {
-            string filePath = "mission.json";
-            PopulateJsonMissions(filePath);
-
             PopulateListViewWithMissions();
             PopulateAssassinsListView();
         }
@@ -295,13 +277,13 @@ namespace Assassins_game
 
         private void RetriveJsonMissionsUpdate_Click(object sender, EventArgs e)
         {
-            
+            string filePath = "mission.json";
+            PopulateJsonMissions(filePath);
         }
 
         private void RefreshLiListViewWithNewAssassins()
         {
             ListAssassinsForMissions.Items.Clear();
-
             PopulateAssassinsListView();
         }
     }

@@ -39,15 +39,23 @@ namespace Assassins_game
                 string missionName = missionNameTextBox.Text;
                 string missionDescription = missionDescriptionTextBoxAdd.Text;
 
-                MissionManager.AddMission(missions, missionName, missionDescription, "");
+                int maxId = missions.Count > 0 ? missions.Max(m=> m.missionId) : 0;
+                int newMissionId = maxId + 1;
+
+                Missions newMission = new Missions(9, missionName, missionDescription, "");
+                newMission.missionId = newMissionId;
+                newMission.missionName = missionName;
+                newMission.missionDescription = missionDescription;
+
+                missions.Add(newMission);
 
                 string filePath = "mission.json";
-                stockholmCityMissions.PopulateJsonMissions(filePath);MissionManager.SaveMissionsToJson(missions, filePath);
-
-                missionNameTextBox.Clear();
-                missionDescriptionTextBoxAdd.Clear();
+                MissionManager.SaveMissionsToJson(missions, filePath);
 
                 stockholmCityMissions.PopulateListViewWithMissions();
+            
+                missionNameTextBox.Clear();
+                missionDescriptionTextBoxAdd.Clear();
             }
             catch(Exception ex)
             {
