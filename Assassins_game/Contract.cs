@@ -19,51 +19,50 @@ namespace Assassins_game
         private Stockholm_City_Missions stockholmCityMissions;
 
 
-        public Contract(List<Missions>missions, ListView listViewMissions, Stockholm_City_Missions stockholmCityMissions, string missionDescription)
+        public Contract(List<Missions> missions, ListView listViewMissions, Stockholm_City_Missions stockholmCityMissions, string missionDescription)
         {
-           
+
             InitializeComponent();
             this.missions = missions;
             this.listViewMissions = listViewMissions;
             this.connection = connection;
             this.stockholmCityMissions = stockholmCityMissions;
             missionDescriptionTextBoxAdd.Text = missionDescription;
-            
+            missionNameTextBox.Text = missionDescription;
 
-        } 
+
+        }
 
         public void AddButtonPress_Click(object sender, EventArgs e)
         {
             try
             {
                 string missionName = missionNameTextBox.Text;
-                string missionDescription = missionDescriptionTextBoxAdd.Text;
+                string missionsDescription = missionDescriptionTextBoxAdd.Text;
 
-                int maxId = missions.Count > 0 ? missions.Max(m=> m.missionId) : 0;
+                int maxId = missions.Count > 0 ? missions.Max(m => m.missionId) : 0;
                 int newMissionId = maxId + 1;
 
-                Missions newMission = new Missions(9, missionName, missionDescription, "");
-                newMission.missionId = newMissionId;
-                newMission.missionName = missionName;
-                newMission.missionDescription = missionDescription;
-
+                Missions newMission = new Missions(newMissionId, missionName, missionsDescription, "");
                 missions.Add(newMission);
 
                 string filePath = "mission.json";
                 MissionManager.SaveMissionsToJson(missions, filePath);
 
                 stockholmCityMissions.PopulateListViewWithMissions();
-            
+
                 missionNameTextBox.Clear();
                 missionDescriptionTextBoxAdd.Clear();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-           
         }
 
-        
+        private void missionNameTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -76,9 +76,6 @@ namespace Assassins_game
             return missions;
         }
 
-        
-
-        
         public void MoveMissionToHistory(int missionId, MySqlConnection connection)
         {
             try

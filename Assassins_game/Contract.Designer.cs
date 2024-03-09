@@ -42,6 +42,7 @@
             missionNameTextBox.Name = "missionNameTextBox";
             missionNameTextBox.Size = new Size(210, 27);
             missionNameTextBox.TabIndex = 0;
+            missionNameTextBox.TextChanged += missionNameTextBox_TextChanged;
             // 
             // missionDescriptionTextBoxAdd
             // 

@@ -34,6 +34,11 @@ namespace Assassins_game
 
 
         }
+        private void RefreshLiListViewWithNewAssassins()
+        {
+            ListAssassinsForMissions.Items.Clear();
+            PopulateAssassinsListView();
+        }
 
         public void PopulateAssassinsListView()
         {
@@ -43,7 +48,7 @@ namespace Assassins_game
             try
             {
 
-                string assassinQuery = "SELECT assassin_id, assassin_name, assassin_rank FROM assassins;";
+                string assassinQuery = "SELECT assassin_id, assassin_name, assassin_rank FROM assassins ORDER BY assassin_id;";
                 MySqlCommand assassinCommand = new MySqlCommand(assassinQuery, connection);
 
                 connection.Open();
@@ -75,9 +80,10 @@ namespace Assassins_game
         public void PopulateListViewWithMissions()
         {
             HashSet<int> missionIds = new HashSet<int>();
+            listViewMissions.Items.Clear();
             try
             {
-                string missionQuery = "SELECT mission_id, mission_name FROM mission";
+                string missionQuery = "SELECT mission_id, mission_name FROM mission ORDER BY mission_id";
                 MySqlCommand missionCommand = new MySqlCommand(missionQuery, connection);
 
                 connection.Open();
@@ -88,10 +94,15 @@ namespace Assassins_game
                     {
                         int missionId = missionReader.GetInt32("mission_id");
                         string missionName = missionReader.GetString("mission_name");
+                        
 
                         if (!missionIds.Contains(missionId))
                         {
-                            missionIds.Add(missionId);
+                            Missions newMission = new Missions();
+                            newMission.missionId = missionId;
+                            newMission.missionName = missionName;
+                            missions.Add(newMission);
+
                             string missionInfo = $"{missionId} - {missionName}";
                             ListViewItem misisonItem = new ListViewItem(missionInfo);
                             listViewMissions.Items.Add(missionInfo);
@@ -109,23 +120,31 @@ namespace Assassins_game
             }
         }
 
-        public void PopulateJsonMissions(string filePath)
+
+        public void GetJsonMissions(string filePath)
         {
-            listViewMissions.Items.Clear();
+            listViewUserMissions.Items.Clear();
 
             List<Missions> missions = MissionManager.LoadMissionsFromJson(filePath);
 
-            foreach (Missions mission in missions)
+            try
             {
-                if(!missions.Any (missions => missions.missionId == mission.missionId))
+                foreach (Missions mission in missions)
                 {
-                    string missionInfo = $"{mission.missionId} - {mission.missionName}";
-                    ListViewItem missionItem = new ListViewItem(missionInfo);
-                    listViewMissions.Items.Add(missionItem);
+                    if (!missions.Any(missions => missions.missionId == mission.missionId))
+                    {
+                        string missionInfo = $"{mission.missionId} - {mission.missionName}";
+                        ListViewItem missionItem = new ListViewItem(missionInfo);
+                        listViewUserMissions.Items.Add(missionItem);
 
+                    }
                 }
-                
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+            
         }
 
         private void SendButton_Click(object sender, EventArgs e)
@@ -144,7 +163,7 @@ namespace Assassins_game
                     string missionName = missionInfo[2];
                     string assassinName = assassinInfo[1];
                     string missionAssassinInfo = $"{missionId} - {missionName} - {assassinName}";
-                    
+
                     ListViewItem historyItem = new ListViewItem(missionAssassinInfo);
                     listViewHistoryMission.Items.Add(missionAssassinInfo);
 
@@ -218,6 +237,7 @@ namespace Assassins_game
             PopulateAssassinsListView();
         }
 
+
         private void listViewMissions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listViewMissions.SelectedItems.Count > 0)
@@ -234,6 +254,21 @@ namespace Assassins_game
             }
         }
 
+        private void ListViewUserMissions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(listViewUserMissions.SelectedItems.Count > 0)
+            {
+                ListViewItem selectedItem = listViewUserMissions.SelectedItems[0];
+
+                string[] missionInfo = selectedItem.Text.Split(',');
+                string missionId = missionInfo[0];
+                string missionName = string.Join(" ", missionInfo.Skip(1));
+
+                string missionDescription = GetMissionDescription(missionId);
+
+                missionDescriptionTextBox.Text = missionDescription;
+            }
+        }
 
         private string GetMissionDescription(string missionId)
         {
@@ -273,18 +308,19 @@ namespace Assassins_game
             Contract contract = new Contract(missions, listViewMissions, this, missionDescription);
             contract.ShowDialog();
 
+
         }
 
-        private void RetriveJsonMissionsUpdate_Click(object sender, EventArgs e)
+        private void RefreshButton_Click(object sender, EventArgs e)
         {
-            string filePath = "mission.json";
-            PopulateJsonMissions(filePath);
+            RetriveUserAddedMissions();
         }
 
-        private void RefreshLiListViewWithNewAssassins()
+        private void RetriveUserAddedMissions()
         {
-            ListAssassinsForMissions.Items.Clear();
-            PopulateAssassinsListView();
+            missions.Clear();
+            missions.AddRange(Contract.GetAddedMissions());
+            listViewUserMissionsAddMissions();
         }
     }
 }

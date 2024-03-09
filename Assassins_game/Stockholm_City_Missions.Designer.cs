@@ -37,6 +37,7 @@
             listViewHistoryMission = new ListView();
             AddingMissions = new Button();
             RefreshAssassinsListViewButton = new Button();
+            listViewUserMissions = new ListView();
             SuspendLayout();
             // 
             // GoBackButton
@@ -63,7 +64,7 @@
             // 
             listViewMissions.Location = new Point(484, 36);
             listViewMissions.Name = "listViewMissions";
-            listViewMissions.Size = new Size(283, 383);
+            listViewMissions.Size = new Size(283, 176);
             listViewMissions.TabIndex = 3;
             listViewMissions.UseCompatibleStateImageBehavior = false;
             listViewMissions.View = View.List;
@@ -74,7 +75,7 @@
             missionDescriptionTextBox.Location = new Point(12, 36);
             missionDescriptionTextBox.Multiline = true;
             missionDescriptionTextBox.Name = "missionDescriptionTextBox";
-            missionDescriptionTextBox.Size = new Size(394, 176);
+            missionDescriptionTextBox.Size = new Size(366, 176);
             missionDescriptionTextBox.TabIndex = 4;
             missionDescriptionTextBox.TextChanged += missionDescriptionTextBox_TextChanged;
             // 
@@ -124,13 +125,23 @@
             RefreshAssassinsListViewButton.TabIndex = 11;
             RefreshAssassinsListViewButton.Text = "Refresh";
             RefreshAssassinsListViewButton.UseVisualStyleBackColor = true;
-            RefreshAssassinsListViewButton.Click += RetriveJsonMissionsUpdate_Click;
+            RefreshAssassinsListViewButton.Click += RefreshButton_Click;
+            // 
+            // listViewUserMissions
+            // 
+            listViewUserMissions.Location = new Point(484, 245);
+            listViewUserMissions.Name = "listViewUserMissions";
+            listViewUserMissions.Size = new Size(283, 174);
+            listViewUserMissions.TabIndex = 12;
+            listViewUserMissions.UseCompatibleStateImageBehavior = false;
+            listViewUserMissions.SelectedIndexChanged += ListViewUserMissions_SelectedIndexChanged;
             // 
             // Stockholm_City_Missions
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 1056);
+            Controls.Add(listViewUserMissions);
             Controls.Add(RefreshAssassinsListViewButton);
             Controls.Add(AddingMissions);
             Controls.Add(ListAssassinsForMissions);
@@ -157,5 +168,6 @@
         private ListView listViewHistoryMission;
         private Button AddingMissions;
         private Button RefreshAssassinsListViewButton;
+        private ListView listViewUserMissions;
     }
 }
