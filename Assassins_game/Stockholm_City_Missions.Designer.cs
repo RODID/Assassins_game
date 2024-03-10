@@ -134,6 +134,7 @@
             listViewUserMissions.Size = new Size(283, 174);
             listViewUserMissions.TabIndex = 12;
             listViewUserMissions.UseCompatibleStateImageBehavior = false;
+            listViewUserMissions.View = View.List;
             listViewUserMissions.SelectedIndexChanged += ListViewUserMissions_SelectedIndexChanged;
             // 
             // Stockholm_City_Missions

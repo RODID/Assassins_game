@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.IsisMtt.X509;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +34,11 @@ namespace Assassins_game
 
         }
 
+        public static List<Missions> GetAddedMissions()
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddButtonPress_Click(object sender, EventArgs e)
         {
             try
@@ -40,19 +46,26 @@ namespace Assassins_game
                 string missionName = missionNameTextBox.Text;
                 string missionsDescription = missionDescriptionTextBoxAdd.Text;
 
-                int maxId = missions.Count > 0 ? missions.Max(m => m.missionId) : 0;
+                string filePath = "mission.json";
+                List<Missions> missionFromJson = MissionManager.LoadMissionsFromJson(filePath);
+
+                if(missionFromJson == null) 
+                {
+                    missionFromJson = new List<Missions>();
+                }
+                if(missionFromJson.Any(m => m.missionName == missionName))
+                {
+                    MessageBox.Show("mission witht the same nae already exist in JSON.");
+                    return;
+                }
+                int maxId = missionFromJson.Count > 0 ? missionFromJson.Max(m => m.missionId) : 0;
                 int newMissionId = maxId + 1;
 
-                Missions newMission = new Missions(newMissionId, missionName, missionsDescription, "");
-                missions.Add(newMission);
+                missionFromJson.Add(new Missions(newMissionId, missionName, missionsDescription, ""));
 
-                string filePath = "mission.json";
-                MissionManager.SaveMissionsToJson(missions, filePath);
+                MissionManager.SaveMissionsToJson(missionFromJson, filePath);
 
-                stockholmCityMissions.PopulateListViewWithMissions();
-
-                missionNameTextBox.Clear();
-                missionDescriptionTextBoxAdd.Clear();
+                stockholmCityMissions.PopulateListViewUserMissionsFormJson();
             }
             catch (Exception ex)
             {

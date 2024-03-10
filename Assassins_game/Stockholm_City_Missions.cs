@@ -77,6 +77,28 @@ namespace Assassins_game
                 connection.Close();
             }
         }
+
+        public void PopulateListViewUserMissionsFormJson()
+        {
+            string filePath = "mission.json";
+            listViewUserMissions.Items.Clear();
+
+            List<Missions> missionsFromJson = MissionManager.LoadMissionsFromJson(filePath);
+            try
+            {
+                foreach(Missions mission in missionsFromJson)
+                {
+                    string missionInfo = $"{mission.missionId} - {mission.missionName}";
+                    ListViewItem missionItem = new ListViewItem(missionInfo);
+                    listViewUserMissions.Items.Add(missionItem);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        
+        }
         public void PopulateListViewWithMissions()
         {
             HashSet<int> missionIds = new HashSet<int>();
@@ -151,35 +173,50 @@ namespace Assassins_game
         {
             try
             {
-                if (ListAssassinsForMissions.SelectedItems.Count > 0 && listViewMissions.SelectedItems.Count > 0)
+                if(ListAssassinsForMissions.SelectedItems.Count > 0)
                 {
-                    ListViewItem selectedMisionItem = listViewMissions.SelectedItems[0];
-                    ListViewItem selectedAssassinItem = ListAssassinsForMissions.SelectedItems[0];
+                    ListViewItem selectedMissionItem = null;
 
-                    string[] missionInfo = selectedMisionItem.SubItems[0].Text.Split(' ');
-                    string[] assassinInfo = selectedAssassinItem.SubItems[0].Text.Split(' ');
+                    if(listViewMissions.SelectedItems.Count > 0)
+                    {
+                        selectedMissionItem = listViewMissions.SelectedItems[0];
+                        listViewMissions.Items.Remove(selectedMissionItem);
+                    }
 
-                    string missionId = missionInfo[0];
-                    string missionName = missionInfo[2];
-                    string assassinName = assassinInfo[1];
-                    string missionAssassinInfo = $"{missionId} - {missionName} - {assassinName}";
+                    else if (listViewUserMissions.SelectedItems.Count > 0)
+                    {
+                        selectedMissionItem = listViewUserMissions.SelectedItems[0];
+                        listViewUserMissions.Items.Remove(selectedMissionItem);
+                    }
 
-                    ListViewItem historyItem = new ListViewItem(missionAssassinInfo);
-                    listViewHistoryMission.Items.Add(missionAssassinInfo);
+                    if(selectedMissionItem != null)
+                    {
+                        string[] missionInfo = selectedMissionItem.Text.Split(' ');
+                        string missionId = missionInfo[0];
+                        string missionName = string.Join("", missionInfo.Skip(1));
 
-                    listViewMissions.Items.Remove(selectedMisionItem);
+                        ListViewItem selectedAssassinItem = ListAssassinsForMissions.SelectedItems[0];
+                        string[] assassinInfo = selectedAssassinItem.SubItems[0].Text.Split(' ');
+                        string assassinName = assassinInfo[1];
+
+                        string missionAssassinInfo = $"{missionId} - {missionName} - {assassinName}";
+                        ListViewItem historyItem = new ListViewItem(missionAssassinInfo);
+                        listViewHistoryMission.Items.Add(historyItem);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please select a mission.");
+                    }
                 }
-
                 else
                 {
-                    MessageBox.Show("Please select a mission and a assassin. ");
+                    MessageBox.Show("Please select a mission.");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            return;
         }
 
 
@@ -260,13 +297,30 @@ namespace Assassins_game
             {
                 ListViewItem selectedItem = listViewUserMissions.SelectedItems[0];
 
-                string[] missionInfo = selectedItem.Text.Split(',');
-                string missionId = missionInfo[0];
-                string missionName = string.Join(" ", missionInfo.Skip(1));
+                try
+                {
+                    string[] missionInfo = selectedItem.Text.Split('-');
 
-                string missionDescription = GetMissionDescription(missionId);
+                    if (missionInfo.Length >= 2)
+                    {
+                        string missionId = missionInfo[0];
+                        string missionName = string.Join(" ", missionInfo.Skip(1));
 
-                missionDescriptionTextBox.Text = missionDescription;
+                        string missionDescription = GetMissionDescription(missionId);
+
+                        missionDescriptionTextBox.Text = missionDescription;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid format for mission information. ");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Error while selecting mission: " + ex.Message);
+                }
+                
+                
             }
         }
 
@@ -313,7 +367,9 @@ namespace Assassins_game
 
         private void RefreshButton_Click(object sender, EventArgs e)
         {
-            RetriveUserAddedMissions();
+            PopulateAssassinsListView();
+            PopulateListViewWithMissions();
+            PopulateListViewUserMissionsFormJson();
         }
 
         private void RetriveUserAddedMissions()
@@ -321,6 +377,11 @@ namespace Assassins_game
             missions.Clear();
             missions.AddRange(Contract.GetAddedMissions());
             listViewUserMissionsAddMissions();
+        }
+
+        private void listViewUserMissionsAddMissions()
+        {
+            throw new NotImplementedException();
         }
     }
 }
