@@ -126,34 +126,51 @@ namespace Assassins_game
 
         public void SendButton_Click(object sender, EventArgs e)
         {
-            if (listViewMissions.SelectedItems.Count > 0 && ListAssassinsForMissions.SelectedItems.Count >0) 
+            if (ListAssassinsForMissions.SelectedItems.Count > 0 && listViewMissions.SelectedItems.Count > 0)
             {
-                try
-                {
-                    string selectedMission = listViewMissions.SelectedItems[0].Text;
-                    string selectedAssassin = ListAssassinsForMissions.SelectedItems[0].Text;
+                string selectedAssassinInfo = ListAssassinsForMissions.SelectedItems[0].Text;
+                string selectedMissionInfo = listViewMissions.SelectedItems[0].Text;
 
-                    string[] missionInfo = selectedMission.Split(' ');
-                    string missionName = missionInfo[1].Trim();
+                string assassinName = selectedAssassinInfo.Split('-')[0].Trim();
+                string missionName = selectedMissionInfo.Split('-')[1].Trim();
 
-                    string[] assassinInfo = selectedAssassin.Split(' ');
-                    string assassinName = missionInfo[0].Trim();
+                InsertMissionHistory(assassinName, missionName);
 
-                    InsertMissionHistory(assassinName, missionName);
-                    db.PopulateListViewHistoryMissions(listViewHistoryMission, connection);
-                   
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show("Error: "+ ex.Message);
-                }
+                listViewMissions.Items.Remove(listViewMissions.SelectedItems[0]);
+
+                listViewHistoryMission.Items.Add(selectedMissionInfo);
+            }
+            else if (ListAssassinsForMissions.SelectedItems.Count > 0 && listViewUserMissions.SelectedItems.Count > 0)
+            {
+                string selectedAssassinInfo = ListAssassinsForMissions.SelectedItems[0].Text;
+                string selectedMissionInfo = listViewUserMissions.SelectedItems[0].Text;
+
+                string assassinName = selectedAssassinInfo.Split('-')[0].Trim();
+                string missionName = GetMissionName(selectedMissionInfo);
+
+                InsertMissionHistory(assassinName, missionName);
+                
+                listViewUserMissions.Items.Remove(listViewUserMissions.SelectedItems[0]);
+
+                listViewHistoryMission.Items.Add(selectedMissionInfo);
             }
             else
             {
-                MessageBox.Show("Please select a mission and an assassin.");
+                MessageBox.Show("Please select an assassin and a mission.");
             }
         }
 
+        private string GetMissionName(string selectedMissionInfo)
+        {
+            if (selectedMissionInfo.Contains('-'))
+            {
+                return selectedMissionInfo.Split('-')[1].Trim();
+            }
+            else 
+            { 
+                return selectedMissionInfo;
+            }
+        }
 
         public void InsertMissionHistory(string assassinName, string missionName)
         {
@@ -191,6 +208,10 @@ namespace Assassins_game
                             if (rowsAffected > 0)
                             {
                                 MessageBox.Show("Mission history inserted successfully!");
+
+                                string historyInfo = $"{assassinName} - {missionName}";
+                                ListViewItem historyItem = new ListViewItem(historyInfo);
+                                listViewHistoryMission.Items.Add(historyItem);
                             }
                             else
                             {
@@ -198,7 +219,6 @@ namespace Assassins_game
                             }
                         }
                     }
-                    
                 }
             }
             catch (Exception ex)
