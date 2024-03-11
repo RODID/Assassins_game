@@ -90,7 +90,6 @@ namespace Assassins_game
 
                 if (assassinId != -1)
                 {
-                    using (MySqlConnection AssassinConnection = GetConnection())
                     using (MySqlCommand moveToHistory = connection.CreateCommand())
                     {
                         moveToHistory.CommandText = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
@@ -124,7 +123,7 @@ namespace Assassins_game
             try
             {
                 using (MySqlConnection connection = GetConnection())
-                using(MySqlCommand command = new MySqlCommand("SELECT * FROM user_ mission"))
+                using (MySqlCommand command = new MySqlCommand("SELECT * FROM user_mission", connection))
                 {
                     connection.Open();
                     using (MySqlDataReader reader = command.ExecuteReader())
@@ -140,12 +139,49 @@ namespace Assassins_game
                     }
                 }
             }
-            catch( Exception ex )
+            catch (Exception ex)
             {
-                MessageBox.Show("Error retrkiving user missions: " + ex.Message);
+                MessageBox.Show("Error retrieving user missions: " + ex.Message);
             }
         }
 
-        
+        public void PopulateListViewHistoryMissions(ListView listViewHistoryMissions, MySqlConnection connection)
+        {
+            listViewHistoryMissions.Items.Clear();
+
+            try
+            {
+                string historyQuery = "SELECT a.assassin_name, m.mission_name " +
+                                      "FROM mission_history mh " +
+                                      "JOIN assassins a ON mh.assassin_id = a.assassin_id " +
+                                      "JOIN mission m ON mh.mission_id = m.mission_id";
+
+
+                MySqlCommand historycommand = new MySqlCommand(historyQuery, connection);
+
+                connection.Open();
+
+                using(MySqlDataReader historyReader = historycommand.ExecuteReader())
+                {
+                    while (historyReader.Read())
+                    {
+                        string assassinName = historyReader.GetString("assassin_name");
+                        string missionName = historyReader.GetString("mission_name");
+
+                        string historyInfo = $"{assassinName} - {missionName}";
+                        ListViewItem historyItem = new ListViewItem(historyInfo);
+                        listViewHistoryMissions.Items.Add(historyItem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: "+ ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

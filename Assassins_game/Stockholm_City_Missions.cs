@@ -78,27 +78,6 @@ namespace Assassins_game
             }
         }
 
-        public void PopulateListViewUserMissionsFormJson()
-        {
-            string filePath = "mission.json";
-            listViewUserMissions.Items.Clear();
-
-            List<Missions> missionsFromJson = MissionManager.LoadMissionsFromJson(filePath);
-            try
-            {
-                foreach (Missions mission in missionsFromJson)
-                {
-                    string missionInfo = $"{mission.missionId} - {mission.missionName}";
-                    ListViewItem missionItem = new ListViewItem(missionInfo);
-                    listViewUserMissions.Items.Add(missionItem);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-
-        }
         public void PopulateListViewWithMissions()
         {
             HashSet<int> missionIds = new HashSet<int>();
@@ -143,31 +122,7 @@ namespace Assassins_game
         }
 
 
-        public void GetJsonMissions(string filePath)
-        {
-            listViewUserMissions.Items.Clear();
-
-            List<Missions> missions = MissionManager.LoadMissionsFromJson(filePath);
-
-            try
-            {
-                foreach (Missions mission in missions)
-                {
-                    if (!missions.Any(missions => missions.missionId == mission.missionId))
-                    {
-                        string missionInfo = $"{mission.missionId} - {mission.missionName}";
-                        ListViewItem missionItem = new ListViewItem(missionInfo);
-                        listViewUserMissions.Items.Add(missionItem);
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-
-        }
+        
 
         public void SendButton_Click(object sender, EventArgs e)
         {
@@ -185,6 +140,8 @@ namespace Assassins_game
                     string assassinName = missionInfo[0].Trim();
 
                     InsertMissionHistory(assassinName, missionName);
+                    db.PopulateListViewHistoryMissions(listViewHistoryMission, connection);
+                   
                 }
                 catch(Exception ex)
                 {
@@ -209,28 +166,39 @@ namespace Assassins_game
                     assassinIdCommand.Parameters.AddWithValue("@assassinName", assassinName);
 
                     connection.Open();
-                    int assassinId = Convert.ToInt32(assassinIdCommand.ExecuteScalar());
+                    object result = assassinIdCommand.ExecuteScalar();
 
-                    string missionIdQuery = "SELECT mission_id FROM mission WHERE mission_name = @missionName";
-                    MySqlCommand missionIdCommand = new MySqlCommand(missionIdQuery, connection);
-                    missionIdCommand.Parameters.AddWithValue("@missionName", missionName);
-
-                    int missionId = Convert.ToInt32(missionIdCommand.ExecuteScalar());
-
-                    string insertQuery = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
-                    MySqlCommand insertCommand = new MySqlCommand(insertQuery, connection);
-                    insertCommand.Parameters.AddWithValue("@assassinId", assassinId);
-                    insertCommand.Parameters.AddWithValue("@missionId", missionId);
-
-                    int rowsAffected = insertCommand.ExecuteNonQuery();
-                    if (rowsAffected > 0)
+                    if (result != null)
                     {
-                        MessageBox.Show("Mission history inserted successfully!");
+                        int assassinId = Convert.ToInt32(result);
+
+                        string missionIdQuery = "SELECT mission_id FROM mission WHERE mission_name = @missionName";
+                        MySqlCommand missionIdCommand = new MySqlCommand(missionIdQuery, connection);
+                        missionIdCommand.Parameters.AddWithValue("@missionName", missionName);
+
+                        result = missionIdCommand.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            int missionId = Convert.ToInt32(result);
+
+                            string insertQuery = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
+                            MySqlCommand insertCommand = new MySqlCommand(insertQuery, connection);
+                            insertCommand.Parameters.AddWithValue("@assassinId", assassinId);
+                            insertCommand.Parameters.AddWithValue("@missionId", missionId);
+
+                            int rowsAffected = insertCommand.ExecuteNonQuery();
+                            if (rowsAffected > 0)
+                            {
+                                MessageBox.Show("Mission history inserted successfully!");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Failed to insert mission history");
+                            }
+                        }
                     }
-                    else
-                    {
-                        MessageBox.Show("Failed to insert mission history");
-                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -298,7 +266,6 @@ namespace Assassins_game
                     MessageBox.Show("Error while selecting mission: " + ex.Message);
                 }
 
-
             }
         }
 
@@ -351,11 +318,6 @@ namespace Assassins_game
         }
 
         
-
-        private void listViewUserMissionsAddMissions()
-        {
-            throw new NotImplementedException();
-        }
 
         private void HotToPlay_TextChanged(object sender, EventArgs e)
         {
