@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices.Marshalling;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static Mysqlx.Crud.UpdateOperation.Types;
@@ -105,6 +106,30 @@ namespace Assassins_game
             {
                 connection.Close();
             }
+
         }
+        public bool RegisterAssassin(string username, string passwordHash)
+        {
+            try
+            {
+                using(MySqlConnection connection = GetConnection())
+                {
+                    string query = "INSERT INTO user_login (username, password_hash) VALUES (@usename, @passwordHash)";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@passwordHash", passwordHash);
+
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error registering user: " + ex.Message );
+                return false;
+            }
+        }
+        
     }
 }

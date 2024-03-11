@@ -86,7 +86,7 @@ namespace Assassins_game
             List<Missions> missionsFromJson = MissionManager.LoadMissionsFromJson(filePath);
             try
             {
-                foreach(Missions mission in missionsFromJson)
+                foreach (Missions mission in missionsFromJson)
                 {
                     string missionInfo = $"{mission.missionId} - {mission.missionName}";
                     ListViewItem missionItem = new ListViewItem(missionInfo);
@@ -97,7 +97,7 @@ namespace Assassins_game
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-        
+
         }
         public void PopulateListViewWithMissions()
         {
@@ -116,7 +116,7 @@ namespace Assassins_game
                     {
                         int missionId = missionReader.GetInt32("mission_id");
                         string missionName = missionReader.GetString("mission_name");
-                        
+
 
                         if (!missionIds.Contains(missionId))
                         {
@@ -162,22 +162,22 @@ namespace Assassins_game
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            
+
         }
 
         private void SendButton_Click(object sender, EventArgs e)
         {
             try
             {
-                if(ListAssassinsForMissions.SelectedItems.Count > 0)
+                if (ListAssassinsForMissions.SelectedItems.Count > 0)
                 {
                     ListViewItem selectedMissionItem = null;
 
-                    if(listViewMissions.SelectedItems.Count > 0)
+                    if (listViewMissions.SelectedItems.Count > 0)
                     {
                         selectedMissionItem = listViewMissions.SelectedItems[0];
                         listViewMissions.Items.Remove(selectedMissionItem);
@@ -189,7 +189,7 @@ namespace Assassins_game
                         listViewUserMissions.Items.Remove(selectedMissionItem);
                     }
 
-                    if(selectedMissionItem != null)
+                    if (selectedMissionItem != null)
                     {
                         string[] missionInfo = selectedMissionItem.Text.Split(' ');
                         string missionId = missionInfo[0];
@@ -293,7 +293,7 @@ namespace Assassins_game
 
         private void ListViewUserMissions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(listViewUserMissions.SelectedItems.Count > 0)
+            if (listViewUserMissions.SelectedItems.Count > 0)
             {
                 ListViewItem selectedItem = listViewUserMissions.SelectedItems[0];
 
@@ -315,12 +315,12 @@ namespace Assassins_game
                         MessageBox.Show("Invalid format for mission information. ");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Error while selecting mission: " + ex.Message);
                 }
-                
-                
+
+
             }
         }
 
@@ -382,6 +382,11 @@ namespace Assassins_game
         private void listViewUserMissionsAddMissions()
         {
             throw new NotImplementedException();
+        }
+
+        private void HotToPlay_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

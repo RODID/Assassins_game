@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Assassins_game
 {
@@ -23,21 +24,20 @@ namespace Assassins_game
 
         private void login_button_Click(object sender, EventArgs e)
         {
-            string adminUsername = "Master";
-            string adminPassword = "Assassin";
+            string username = username_textbox.Text;
+            string password = password_textbox.Text;
 
-            if (username_textbox.Text == adminUsername && password_textbox.Text != adminPassword)
+            string PasswordHash = HashPassword(password);
+
+            bool isAuthenticated = Database.AuthenticateUser(username, passwordHash);
+
+            if (isAuthenticated)
             {
-                MessageBox.Show("Wrong password, try another time!");
+                MessageBox.Show("Welcome Grand Master!");
             }
-
-            else if (username_textbox.Text == adminUsername && password_textbox.Text == adminPassword)
+            else
             {
-                MessageBox.Show("Welcome Back, Master Assassin.");
-
-                Assassin_Scandinavia assassin_Scandinavia = new Assassin_Scandinavia();
-                assassin_Scandinavia.ShowDialog();
-
+                MessageBox.Show("Invalid username or password. Please try again");
             }
         }
 

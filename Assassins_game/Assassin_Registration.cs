@@ -47,21 +47,30 @@ namespace Assassins_game
 
         private void register_register_Click(object sender, EventArgs e)
         {
-            UserInfo user = new UserInfo
+
+
+
+        }
+
+        private void RegisterButton_Click(object sender, EventArgs e)
+        {
+            string username = register_username_txtbox.Text;
+            string email = register_email_txtbox.Text;
+            string password = register_password_txtbox1.Text;
+
+            string passwordHash = HashPassword(password);
+
+            bool registrationSeccessful = Database.RegisterAssassin(username, passwordHash);
+
+            if(registrationSeccessful)
             {
-                Username = register_username_txtbox.Text,
-                Email = register_email_txtbox.Text,
-                Password = register_password_txtbox1.Text,
-                Password2 = register_password_txtbox2.Text,
-            };
-
-            string json = JsonConvert.SerializeObject(user);
-
-            File.WriteAllText("userdata.json", json);
-
-            MessageBox.Show("User Registered. Bueno Fortuna.");
-
-            Close();
+                MessageBox.Show("User Registered. Boueno Fortuna.");
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Registration failed. Please try agian");
+            }
         }
     }
 }
