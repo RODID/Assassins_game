@@ -14,13 +14,15 @@ namespace Assassins_game
 {
     public partial class Contract : Form
     {
+        private DB db = new DB();
         private List<Missions> missions;
         private ListView listViewMissions;
+        private ListView listViewUserMissions;
         private MySqlConnection connection;
         private Stockholm_City_Missions stockholmCityMissions;
 
 
-        public Contract(List<Missions> missions, ListView listViewMissions, Stockholm_City_Missions stockholmCityMissions, string missionDescription)
+        public Contract(List<Missions> missions, ListView listViewMissions , Stockholm_City_Missions stockholmCityMissions, string missionDescription, ListView listViewUserMissions)
         {
 
             InitializeComponent();
@@ -28,44 +30,37 @@ namespace Assassins_game
             this.listViewMissions = listViewMissions;
             this.connection = connection;
             this.stockholmCityMissions = stockholmCityMissions;
+            this.listViewUserMissions = listViewUserMissions;
             missionDescriptionTextBoxAdd.Text = missionDescription;
             missionNameTextBox.Text = missionDescription;
 
 
         }
 
-        public static List<Missions> GetAddedMissions()
-        {
-            throw new NotImplementedException();
-        }
-
         public void AddButtonPress_Click(object sender, EventArgs e)
         {
+            
             try
             {
                 string missionName = missionNameTextBox.Text;
-                string missionsDescription = missionDescriptionTextBoxAdd.Text;
+                string missionDescription = missionDescriptionTextBoxAdd.Text;
 
-                string filePath = "mission.json";
-                List<Missions> missionFromJson = MissionManager.LoadMissionsFromJson(filePath);
-
-                if(missionFromJson == null) 
+                using (MySqlConnection connection = db.GetConnection())
                 {
-                    missionFromJson = new List<Missions>();
+                    string insertQuery = "INSERT INTO user_mission (mission_name, mission_description) VALUES (@missionName, @missionDescription)";
+                    MySqlCommand insertCommand = new MySqlCommand(insertQuery, connection);
+                    insertCommand.Parameters.AddWithValue("@missionName", missionName);
+                    insertCommand.Parameters.AddWithValue("@missionDescription", missionDescription);
+
+                    connection.Open();
+                    int rowsAffected = insertCommand.ExecuteNonQuery();
+                    if(rowsAffected >0)
+                    {
+                        MessageBox.Show("Mission added successfully!");
+                        
+                        db.PopulateListViewUserMissions(listViewUserMissions);
+                    }
                 }
-                if(missionFromJson.Any(m => m.missionName == missionName))
-                {
-                    MessageBox.Show("mission witht the same nae already exist in JSON.");
-                    return;
-                }
-                int maxId = missionFromJson.Count > 0 ? missionFromJson.Max(m => m.missionId) : 0;
-                int newMissionId = maxId + 1;
-
-                missionFromJson.Add(new Missions(newMissionId, missionName, missionsDescription, ""));
-
-                MissionManager.SaveMissionsToJson(missionFromJson, filePath);
-
-                stockholmCityMissions.PopulateListViewUserMissionsFormJson();
             }
             catch (Exception ex)
             {

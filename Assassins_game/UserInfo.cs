@@ -10,16 +10,14 @@ namespace Assassins_game
 {
     public class UserInfo
     {
-        public UserInfo(string username, string email, string passwordHash)
+        public UserInfo(string username, string password)
         {
             Username = username;
-            Email = email;
-            PasswordHash = passwordHash;
+            Password = password;
         }
 
         public string Username { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string Password{ get; set; }
     }
 
 }

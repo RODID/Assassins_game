@@ -169,77 +169,55 @@ namespace Assassins_game
 
         }
 
-        private void SendButton_Click(object sender, EventArgs e)
+        public void SendButton_Click(object sender, EventArgs e)
         {
-            try
+            if (listViewMissions.SelectedItems.Count > 0 && ListAssassinsForMissions.SelectedItems.Count >0) 
             {
-                if (ListAssassinsForMissions.SelectedItems.Count > 0)
+                try
                 {
-                    ListViewItem selectedMissionItem = null;
+                    string selectedMission = listViewMissions.SelectedItems[0].Text;
+                    string selectedAssassin = ListAssassinsForMissions.SelectedItems[0].Text;
 
-                    if (listViewMissions.SelectedItems.Count > 0)
-                    {
-                        selectedMissionItem = listViewMissions.SelectedItems[0];
-                        listViewMissions.Items.Remove(selectedMissionItem);
-                    }
+                    string[] missionInfo = selectedMission.Split(' ');
+                    string missionName = missionInfo[1].Trim();
 
-                    else if (listViewUserMissions.SelectedItems.Count > 0)
-                    {
-                        selectedMissionItem = listViewUserMissions.SelectedItems[0];
-                        listViewUserMissions.Items.Remove(selectedMissionItem);
-                    }
+                    string[] assassinInfo = selectedAssassin.Split(' ');
+                    string assassinName = missionInfo[0].Trim();
 
-                    if (selectedMissionItem != null)
-                    {
-                        string[] missionInfo = selectedMissionItem.Text.Split(' ');
-                        string missionId = missionInfo[0];
-                        string missionName = string.Join("", missionInfo.Skip(1));
-
-                        ListViewItem selectedAssassinItem = ListAssassinsForMissions.SelectedItems[0];
-                        string[] assassinInfo = selectedAssassinItem.SubItems[0].Text.Split(' ');
-                        string assassinName = assassinInfo[1];
-
-                        string missionAssassinInfo = $"{missionId} - {missionName} - {assassinName}";
-                        ListViewItem historyItem = new ListViewItem(missionAssassinInfo);
-                        listViewHistoryMission.Items.Add(historyItem);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please select a mission.");
-                    }
+                    InsertMissionHistory(assassinName, missionName);
                 }
-                else
+                catch(Exception ex)
                 {
-                    MessageBox.Show("Please select a mission.");
+                    MessageBox.Show("Error: "+ ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Please select a mission and an assassin.");
             }
         }
 
 
-        public void InsertMissionHistory(string missionName, string assassinName)
+        public void InsertMissionHistory(string assassinName, string missionName)
         {
             try
             {
                 using (MySqlConnection connection = db.GetConnection())
                 {
-                    string missionIdQuery = "SELECT mission_id FROM mission WHERE mission_name = @missionName;";
-                    MySqlCommand missionIdCommand = new MySqlCommand(missionIdQuery, connection);
-                    missionIdCommand.Parameters.AddWithValue("@missionName", missionName);
-
-                    string assassinIdQuery = "SELECT assassin_id FROM assassins WHERE assassin_name = @assassinName;";
+                    string assassinIdQuery = "SELECT assassin_id FROM assassins WHERE assassin_name = @assassinName";
                     MySqlCommand assassinIdCommand = new MySqlCommand(assassinIdQuery, connection);
                     assassinIdCommand.Parameters.AddWithValue("@assassinName", assassinName);
 
                     connection.Open();
-
-                    int missionId = Convert.ToInt32(missionIdCommand.ExecuteScalar());
                     int assassinId = Convert.ToInt32(assassinIdCommand.ExecuteScalar());
 
-                    string insertQuery = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId);";
+                    string missionIdQuery = "SELECT mission_id FROM mission WHERE mission_name = @missionName";
+                    MySqlCommand missionIdCommand = new MySqlCommand(missionIdQuery, connection);
+                    missionIdCommand.Parameters.AddWithValue("@missionName", missionName);
+
+                    int missionId = Convert.ToInt32(missionIdCommand.ExecuteScalar());
+
+                    string insertQuery = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
                     MySqlCommand insertCommand = new MySqlCommand(insertQuery, connection);
                     insertCommand.Parameters.AddWithValue("@assassinId", assassinId);
                     insertCommand.Parameters.AddWithValue("@missionId", missionId);
@@ -301,7 +279,7 @@ namespace Assassins_game
                 {
                     string[] missionInfo = selectedItem.Text.Split('-');
 
-                    if (missionInfo.Length >= 2)
+                    if (missionInfo.Length > 0)
                     {
                         string missionId = missionInfo[0];
                         string missionName = string.Join(" ", missionInfo.Skip(1));
@@ -359,7 +337,7 @@ namespace Assassins_game
         {
             string missionDescription = missionDescriptionTextBox.Text;
 
-            Contract contract = new Contract(missions, listViewMissions, this, missionDescription);
+            Contract contract = new Contract(missions, listViewMissions, this, missionDescription, listViewUserMissions);
             contract.ShowDialog();
 
 
@@ -369,15 +347,10 @@ namespace Assassins_game
         {
             PopulateAssassinsListView();
             PopulateListViewWithMissions();
-            PopulateListViewUserMissionsFormJson();
+            db.PopulateListViewUserMissions(listViewUserMissions);
         }
 
-        private void RetriveUserAddedMissions()
-        {
-            missions.Clear();
-            missions.AddRange(Contract.GetAddedMissions());
-            listViewUserMissionsAddMissions();
-        }
+        
 
         private void listViewUserMissionsAddMissions()
         {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices.Marshalling;
 using System.Security.Cryptography.X509Certificates;
+using System.Windows.Forms;
 using System.Text;
 using System.Threading.Tasks;
 using static Mysqlx.Crud.UpdateOperation.Types;
@@ -53,26 +54,30 @@ namespace Assassins_game
         {
             List<Missions> missions = new List<Missions>();
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            try
             {
-                connection.Open();
-
-                string query = "SELECT * FROM mission;";
-                MySqlCommand command = new MySqlCommand(query, connection);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                using (MySqlCommand command = new MySqlCommand("SELECT * FROM mission", connection))
                 {
-                    while (reader.Read())
+                    connection.Open();
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        int missionId = Convert.ToInt32(reader["mission_id"]);
-                        string missionName = reader["mission_name"].ToString();
-                        string missionDescription = reader["mission_description"].ToString();
-                        string missionLocation = reader["mission_location"].ToString();
+                        while (reader.Read())
+                        {
+                            int missionId = reader.GetInt32("mission_id");
+                            string missionName = reader.GetString("mission_name");
+                            string missionDescription = reader.GetString("mission_description");
+                            string missionLocation = reader.GetString("mission_location");
 
-                        Missions mission = new Missions(missionName, missionDescription, missionLocation);
-                        missions.Add(mission);
+                            Missions mission = new Missions(missionName, missionDescription, missionLocation);
+                            missions.Add(mission);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retriving missions: " + ex.Message);
             }
             return missions;
         }
@@ -81,17 +86,20 @@ namespace Assassins_game
         {
             try
             {
-                int assassinId = (int)GetAssassinId(missionId);
+                int assassinId = GetAssassinId(missionId);
 
                 if (assassinId != -1)
                 {
-                    string query = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
-                    MySqlCommand moveToHistory = new MySqlCommand(query, connection);
-                    moveToHistory.Parameters.AddWithValue("@assassinId", assassinId);
-                    moveToHistory.Parameters.AddWithValue("@missionId", missionId);
+                    using (MySqlConnection AssassinConnection = GetConnection())
+                    using (MySqlCommand moveToHistory = connection.CreateCommand())
+                    {
+                        moveToHistory.CommandText = "INSERT INTO mission_history (assassin_id, mission_id) VALUES (@assassinId, @missionId)";
+                        moveToHistory.Parameters.AddWithValue("@assassinId", assassinId);
+                        moveToHistory.Parameters.AddWithValue("@missionId", missionId);
 
-                    connection.Open();
-                    moveToHistory.ExecuteNonQuery();
+                        connection.Open();
+                        moveToHistory.ExecuteNonQuery();
+                    }
                 }
                 else
                 {
@@ -108,28 +116,36 @@ namespace Assassins_game
             }
 
         }
-        public bool RegisterAssassin(string username, string passwordHash)
+
+        public void PopulateListViewUserMissions(ListView listViewUserMissions)
         {
+            listViewUserMissions.Items.Clear();
+
             try
             {
-                using(MySqlConnection connection = GetConnection())
+                using (MySqlConnection connection = GetConnection())
+                using(MySqlCommand command = new MySqlCommand("SELECT * FROM user_ mission"))
                 {
-                    string query = "INSERT INTO user_login (username, password_hash) VALUES (@usename, @passwordHash)";
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@username", username);
-                    command.Parameters.AddWithValue("@passwordHash", passwordHash);
-
                     connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    return rowsAffected > 0;
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string missionName = reader.GetString("mission_name");
+                            string missionDescription = reader.GetString("mission_description");
+                            ListViewItem item = new ListViewItem(missionName);
+                            item.SubItems.Add(missionDescription);
+                            listViewUserMissions.Items.Add(item);
+                        }
+                    }
                 }
             }
-            catch(Exception ex)
+            catch( Exception ex )
             {
-                MessageBox.Show("Error registering user: " + ex.Message );
-                return false;
+                MessageBox.Show("Error retrkiving user missions: " + ex.Message);
             }
         }
+
         
     }
 }
