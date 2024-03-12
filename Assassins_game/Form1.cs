@@ -4,11 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Assassins_game
 {
     public partial class Form1 : Form
     {
+        DB db = new DB();
         public Form1()
         {
             InitializeComponent();
@@ -21,22 +25,43 @@ namespace Assassins_game
 
         private void login_button_Click(object sender, EventArgs e)
         {
-            string adminUsername = "Master";
-            string adminPassword = "Assassin";
+            string username = username_textbox.Text.Trim();
+            string password = password_textbox.Text;
 
-            if (username_textbox.Text == adminUsername && password_textbox.Text != adminPassword)
+            try
             {
-                MessageBox.Show("Wrong password, try another time!");
+                using (MySqlConnection connection = db.GetConnection())
+                {
+                    connection.Open();
+
+                    string query = "SELECT COUNT(*) FROM user_login WHERE username = @username AND password_hash = @password";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("username", username);
+                        command.Parameters.AddWithValue("password", password);
+
+                        int count = Convert.ToInt32(command.ExecuteScalar());
+
+                        if(count > 0)
+                        {
+                            MessageBox.Show("Login successful!");
+                            Assassin_Scandinavia AsSc= new Assassin_Scandinavia();
+                            AsSc.ShowDialog();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid username or password. Please try again");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error logging in: " + ex.Message);
+
             }
 
-            else if (username_textbox.Text == adminUsername && password_textbox.Text == adminPassword)
-            {
-                MessageBox.Show("Welcome Back, Master Assassin.");
-
-                Assassin_Scandinavia assassin_Scandinavia = new Assassin_Scandinavia();
-                assassin_Scandinavia.ShowDialog();
-
-            }
         }
 
         private void signup_button_Click(object sender, EventArgs e)
@@ -55,5 +80,6 @@ namespace Assassins_game
         {
 
         }
+        
     }
 }

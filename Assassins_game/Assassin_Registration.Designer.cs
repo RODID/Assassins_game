@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            register_register_ = new Button();
             register_clear_ = new Button();
             Register_username_txtlabel = new Label();
             register_password_txtlabel = new Label();
@@ -40,17 +39,8 @@
             textBox4 = new TextBox();
             register_email_txtbox = new TextBox();
             register_goback_ = new Button();
+            button1 = new Button();
             SuspendLayout();
-            // 
-            // register_register_
-            // 
-            register_register_.Location = new Point(276, 285);
-            register_register_.Name = "register_register_";
-            register_register_.Size = new Size(94, 29);
-            register_register_.TabIndex = 0;
-            register_register_.Text = "Register";
-            register_register_.UseVisualStyleBackColor = true;
-            register_register_.Click += register_register_Click;
             // 
             // register_clear_
             // 
@@ -145,11 +135,22 @@
             register_goback_.UseVisualStyleBackColor = true;
             register_goback_.Click += register_goback_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(288, 285);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 4;
+            button1.Text = "Register";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += RegisterButton_Click;
+            // 
             // Assassin_Registration
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(button1);
             Controls.Add(register_email_txtbox);
             Controls.Add(textBox4);
             Controls.Add(register_password_txtbox2);
@@ -161,7 +162,6 @@
             Controls.Add(Register_username_txtlabel);
             Controls.Add(register_goback_);
             Controls.Add(register_clear_);
-            Controls.Add(register_register_);
             Name = "Assassin_Registration";
             Text = "Assassin_Registration";
             ResumeLayout(false);
@@ -169,8 +169,6 @@
         }
 
         #endregion
-
-        private Button register_register_;
         private Button register_clear_;
         private Label Register_username_txtlabel;
         private Label register_password_txtlabel;
@@ -182,5 +180,6 @@
         private TextBox textBox4;
         private TextBox register_email_txtbox;
         private Button register_goback_;
+        private Button button1;
     }
 }

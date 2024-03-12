@@ -1,30 +1,46 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Assassins_game
 {
-    internal class Missions
+    public class Missions
     {
-        public int Mission_id { get; set; }
-        public string Mission_name { get; set; }
-        public string Mission_title { get; set; }
-        public string Mission_description { get; set; }
-        public TimeSpan Mission_duration { get; set; }
+        DB db = new DB();
 
-        public Missions(int mission_id, string mission_name, string mission_title, string mission_description, TimeSpan mission_duration)
+        
+        public static int lastMissionId = 0;
+
+        [JsonConstructor]
+        public Missions(int missionId, string missionName, string missionDescription, string missionLocation)
         {
-            Mission_id = mission_id;
-            Mission_name = mission_name;
-            Mission_title = mission_title;
-            Mission_description = mission_description;
-            Mission_duration = mission_duration;
+            this.missionId = lastMissionId;
+            this.missionName = missionName;
+            this.missionDescription = missionDescription;
+            this.missionLocation = missionLocation;
+            lastMissionId++;
         }
-       
+
+        public Missions(string missionName = "", string missionDescription = "", string missionLocation = "")
+        {
+            this.missionId = lastMissionId;
+            this.missionName = missionName;
+            this.missionDescription = missionDescription;
+            this.missionLocation = missionLocation;
+            lastMissionId++;
+        }
+
+        public int missionId { get; set; }
+        public string missionName { get; set; }
+        public string missionDescription { get; set; }
+        public string missionLocation { get; set; }
+
 
     }
-
 
 }
