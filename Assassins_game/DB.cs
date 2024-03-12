@@ -17,7 +17,7 @@ namespace Assassins_game
         public Assassins Assassins;
         public Missions mission;
 
-        private string connectionString = "server=localhost;uid=root;password=arjan123;database=Assassins_DB;";
+        private string connectionString = "server=localhost;uid=root;password=;database=Assassins_DB;";
         
         public MySqlConnection GetConnection()
         {
