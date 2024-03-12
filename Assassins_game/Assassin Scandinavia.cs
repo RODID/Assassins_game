@@ -16,6 +16,7 @@ namespace Assassins_game
         private readonly DB db = new DB();
         public List<Missions> Missions = new List<Missions>();
         public Contract contract;
+
         public Assassin_Scandinavia()
         {
             InitializeComponent();
